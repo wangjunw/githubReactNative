@@ -4,6 +4,7 @@
 import React from 'react';
 import {Text, StyleSheet, View, Image} from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
+import PopularPage from '../pages/PopularPage';
 export default class HomePage extends React.Component {
   constructor() {
     super();
@@ -38,7 +39,7 @@ export default class HomePage extends React.Component {
               this.changeTab('popular');
             }}>
             <View style={styles.page}>
-              <Text>首页</Text>
+              <PopularPage />
             </View>
           </TabNavigator.Item>
           <TabNavigator.Item
@@ -116,7 +117,6 @@ const styles = StyleSheet.create({
   },
   page: {
     flex: 1,
-    backgroundColor: 'red',
   },
   tabIcon: {
     width: 22,
