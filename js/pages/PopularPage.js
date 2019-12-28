@@ -1,11 +1,20 @@
 import React, {Component} from 'react';
-import {Text, StyleSheet, View, Image, TextInput} from 'react-native';
-import NavigationBar from '../components/NavigationBar';
+import {Text, StyleSheet, View} from 'react-native';
 import {baseUrl} from '../config/config';
 import DataRepository from '../expand/dao/DataRepository';
+// import {createAppContainer} from 'react-navigation';
+import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
 const URL = `${baseUrl}/search/repositories?q=`;
 const QUERY_STR = '&sort=stars';
+const routeConfig = {};
+const tabNavigatorConfig = {
+  initialRouteName: 'all',
+};
+// const TabBar = createMaterialTopTabNavigator(routeConfig, tabNavigatorConfig);
 export default class PopularPage extends Component {
+  static navigationOptions = {
+    title: '最热',
+  };
   constructor() {
     super();
     this.state = {
@@ -26,24 +35,13 @@ export default class PopularPage extends Component {
       });
   };
   getUrl = key => {
-    alert(URL + key + QUERY_STR);
     return URL + key + QUERY_STR;
   };
   render() {
     return (
       <View style={styles.container}>
-        <NavigationBar title="最热" />
-        <TextInput
-          style={{height: 20, borderWidth: 1, fontSize: 16}}
-          onChangeText={text => (this.text = text)}
-        />
-        <Text
-          onPress={() => {
-            this.onLoad();
-          }}>
-          获取数据
-        </Text>
-        <Text>{this.state.result}</Text>
+        {/* <TabBar /> */}
+        <Text>册</Text>
       </View>
     );
   }
