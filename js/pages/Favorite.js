@@ -1,10 +1,13 @@
+/**
+ * 收藏页
+ */
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
-export default class My extends React.Component {
+export default class Favorite extends React.Component {
   render() {
     return (
       <View>
-        <Text>我的页面</Text>
+        <Text>目前趋势</Text>
       </View>
     );
   }

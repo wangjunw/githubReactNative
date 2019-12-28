@@ -1,54 +1,37 @@
-import React, {Component} from 'react';
-import {Text, StyleSheet, View} from 'react-native';
-import {baseUrl} from '../config/config';
-import DataRepository from '../expand/dao/DataRepository';
-// import {createAppContainer} from 'react-navigation';
-import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
-const URL = `${baseUrl}/search/repositories?q=`;
-const QUERY_STR = '&sort=stars';
-const routeConfig = {};
-const tabNavigatorConfig = {
-  initialRouteName: 'all',
-};
-// const TabBar = createMaterialTopTabNavigator(routeConfig, tabNavigatorConfig);
-export default class PopularPage extends Component {
-  static navigationOptions = {
-    title: '最热',
-  };
-  constructor() {
-    super();
-    this.state = {
-      result: '',
-    };
-    this.DataRepository = new DataRepository();
-  }
-  onLoad = () => {
-    let url = this.getUrl(this.text);
-    this.DataRepository.fetchNetRepository(url)
-      .then(res => {
-        this.setState({
-          result: JSON.stringify(res),
-        });
-      })
-      .catch(err => {
-        this.setState({result: JSON.stringify(err)});
-      });
-  };
-  getUrl = key => {
-    return URL + key + QUERY_STR;
-  };
-  render() {
-    return (
-      <View style={styles.container}>
-        {/* <TabBar /> */}
-        <Text>册</Text>
-      </View>
-    );
-  }
-}
+import React from 'react';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
+import ReposList from '../components/ReposList';
+
+function AllRepos() {
+  return <ReposList language="all" />;
+}
+function ReactRepos() {
+  return <ReposList language="react" />;
+}
+const routeConfig = {
+  All: {
+    screen: AllRepos,
+    navigationOptions: {
+      title: 'All',
+    },
   },
-});
+  React: {
+    screen: ReactRepos,
+    navigationOptions: {
+      title: 'React',
+    },
+  },
+};
+const tabNavigatorConfig = {
+  initialRouteName: 'All',
+  lazy: true,
+  scrollEnabled: true,
+  swipeEnabled: true,
+  animationEnabled: true,
+  indicatorStyle: {
+    backgroundColor: '#e7e7e7',
+  },
+};
+
+export default createMaterialTopTabNavigator(routeConfig, tabNavigatorConfig);
