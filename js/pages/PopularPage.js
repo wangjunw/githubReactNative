@@ -27,8 +27,6 @@ const tabNavigatorConfig = {
   initialRouteName: 'All',
   lazy: true,
   scrollEnabled: true,
-  swipeEnabled: true,
-  animationEnabled: true,
   indicatorStyle: {
     backgroundColor: '#e7e7e7',
   },

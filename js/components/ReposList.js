@@ -14,7 +14,7 @@ export default class ReposList extends React.Component {
     };
     this.DataRepository = new DataRepository();
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.getRepos();
   }
   getRepos = () => {

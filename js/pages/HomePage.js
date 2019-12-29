@@ -5,7 +5,7 @@ import React from 'react';
 // import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
 import PopularPage from '../pages/PopularPage';
-import MyPage from '../pages/MyPage';
+import MyPage from './my/Index';
 import TrendingPage from '../pages/Trending';
 import FavoritePage from '../pages/Favorite';
 import Ionicons from 'react-native-vector-icons/AntDesign';
