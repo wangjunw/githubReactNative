@@ -2,10 +2,6 @@
  * APP全局导航配置
  */
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
-import {
-  createBottomTabNavigator,
-  createMaterialTopTabNavigator,
-} from 'react-navigation-tabs';
 import {createStackNavigator} from 'react-navigation-stack';
 import WelcomePage from '../pages/WelcomePage';
 import HomePage from '../pages/HomePage';
