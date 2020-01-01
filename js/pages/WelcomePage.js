@@ -3,11 +3,13 @@
  */
 import React, {Component} from 'react';
 import {Text, StyleSheet, View} from 'react-native';
-
+import NavigationUtil from '../navigator/NavigationUtil';
 export default class WelcomePage extends Component {
   componentDidMount() {
     this.timer = setTimeout(() => {
-      this.props.navigation.navigate('Home');
+      NavigationUtil.resetToHomePage({
+        navigation: this.props.navigation,
+      });
     }, 2000);
   }
   componentWillUnmount() {
@@ -15,9 +17,17 @@ export default class WelcomePage extends Component {
   }
   render() {
     return (
-      <View>
+      <View style={styles.welcome_root}>
         <Text>来了老弟!</Text>
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  welcome_root: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
