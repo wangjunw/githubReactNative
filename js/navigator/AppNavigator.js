@@ -3,6 +3,11 @@
  */
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
+import {connect} from 'react-redux';
+import {
+  createReactNavigationReduxMiddleware,
+  createReduxContainer,
+} from 'react-navigation-redux-helpers';
 import WelcomePage from '../pages/WelcomePage';
 import HomePage from '../pages/HomePage';
 import DetailPage from '../pages/Detail';
@@ -34,7 +39,7 @@ const MainNavigator = createStackNavigator({
  * createSwitchNavigator：不处理返回操作，切换时重置路由状态。适用于从启动欢迎页跳转到首页，首页不能再回到欢迎页的场景
  * createAppContainer：与react组件直接交互的navigation必须包裹起来，MainNavigator等不直接交互的无需包括
  */
-export default createAppContainer(
+const RootNavigator = createAppContainer(
   createSwitchNavigator(
     {
       Init: InitNavigator,
@@ -48,3 +53,21 @@ export default createAppContainer(
     },
   ),
 );
+// 初始化中间件
+export const middleware = createReactNavigationReduxMiddleware(
+  state => state.nav,
+  'root',
+);
+
+/**
+ * 将根导航器组件传递给createReduxContainer
+ * 要在createReactNavigationReduxMiddleware之后执行
+ */
+const AppWithNavigationState = createReduxContainer(RootNavigator, 'root');
+
+// 创建state到props
+const mapStateToProps = state => ({
+  state: state.nav,
+});
+// 连接react组件与redux
+export default connect(mapStateToProps)(AppWithNavigationState);
