@@ -12,6 +12,8 @@ import WelcomePage from '../pages/WelcomePage';
 import HomePage from '../pages/HomePage';
 import DetailPage from '../pages/Detail';
 
+export const rootCom = 'Init'; //定义根路由
+
 // 初始化导航器，用于加载欢迎页
 const InitNavigator = createStackNavigator({
   Welcome: {
@@ -39,7 +41,7 @@ const MainNavigator = createStackNavigator({
  * createSwitchNavigator：不处理返回操作，切换时重置路由状态。适用于从启动欢迎页跳转到首页，首页不能再回到欢迎页的场景
  * createAppContainer：与react组件直接交互的navigation必须包裹起来，MainNavigator等不直接交互的无需包括
  */
-const RootNavigator = createAppContainer(
+export const RootNavigator = createAppContainer(
   createSwitchNavigator(
     {
       Init: InitNavigator,
