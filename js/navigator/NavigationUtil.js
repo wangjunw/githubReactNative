@@ -11,7 +11,7 @@ export default class NavigationUtil {
     // 使用外层的navigation，跳转外层路由
     const navigation = NavigationUtil.navigation;
     if (!navigation) {
-      console.log('页面不存在');
+      alert('页面不存在');
       return;
     }
     navigation.navigate(page, {...params});

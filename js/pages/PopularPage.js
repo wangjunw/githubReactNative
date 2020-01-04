@@ -1,17 +1,69 @@
 import React, {Component} from 'react';
-
+import {connect} from 'react-redux';
 import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, FlatList, RefreshControl} from 'react-native';
 import {createAppContainer} from 'react-navigation';
 import NavigationUtil from '../navigator/NavigationUtil';
-
+import actions from '../action/index';
+const URL = 'https://api.github.com/search/repositories?q=';
+const QUERY_STR = '&sort=stars';
+const THEME_COLOR = 'red';
 // tab对应的组件
 class PopularTabView extends Component {
-  render() {
+  constructor(props) {
+    super(props);
     const {tabLabel} = this.props;
+    this.languageName = tabLabel;
+  }
+  componentDidMount() {
+    this.loadData();
+  }
+  loadData = () => {
+    const url = this.getFetchUrl(this.languageName);
+    const {onLoadPopularData} = this.props;
+    onLoadPopularData(this.languageName, url);
+  };
+  getFetchUrl = languageName => {
+    return URL + languageName + QUERY_STR;
+  };
+
+  renderItem = item => {
     return (
       <View>
-        <Text>{tabLabel}</Text>
+        <Text>{JSON.stringify(item)}</Text>
+      </View>
+    );
+  };
+  render() {
+    const {popular} = this.props;
+    let languageData = popular[this.languageName];
+    if (!languageData) {
+      languageData = {
+        items: [],
+        isLoading: false,
+      };
+    }
+    return (
+      <View>
+        <FlatList
+          style={styles.tabContainer}
+          data={languageData.items}
+          renderItem={item => this.renderItem(item)}
+          keyExtractor={item => '' + item.id}
+          refreshControl={
+            <RefreshControl
+              title={'Loading...'}
+              titleColor={THEME_COLOR}
+              colors={[THEME_COLOR]}
+              refreshing={languageData.isLoading}
+              onRefresh={() => {
+                this.loadData();
+              }}
+              tintColor={THEME_COLOR}
+            />
+          }
+        />
+
         <Text
           onPress={() => {
             NavigationUtil.goPage(
@@ -25,6 +77,19 @@ class PopularTabView extends Component {
     );
   }
 }
+const mapStateToProps = state => ({
+  popular: state.popular,
+});
+const mapDispatchToProps = dispatch => ({
+  onLoadPopularData: (languageName, url) => {
+    return dispatch(actions.onLoadPopularData(languageName, url));
+  },
+});
+const PopularTabViewWithRedux = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(PopularTabView);
+
 export default class PopularPage extends Component {
   constructor(props) {
     super(props);
@@ -34,7 +99,7 @@ export default class PopularPage extends Component {
     const tabs = {};
     this.tabNames.forEach((item, index) => {
       tabs[`tab${index}`] = {
-        screen: props => <PopularTabView {...props} tabLabel={item} />, //返回组件可以传递函数
+        screen: props => <PopularTabViewWithRedux {...props} tabLabel={item} />, //返回组件可以传递函数
         navigationOptions: {
           title: item,
         },
@@ -64,6 +129,9 @@ export default class PopularPage extends Component {
 }
 
 const styles = StyleSheet.create({
+  tabContainer: {
+    color: 'red',
+  },
   tabStyle: {
     minWidth: 50,
   },

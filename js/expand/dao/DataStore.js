@@ -52,7 +52,7 @@ export default class DataStore {
       fetch(url)
         .then(res => {
           if (res.ok) {
-            res.json();
+            return res.json();
           }
           throw new Error('network is faild！');
         })
@@ -62,6 +62,34 @@ export default class DataStore {
         })
         .catch(err => {
           reject(err);
+        });
+    });
+  }
+  // 入口方法
+  fetchData(url) {
+    return new Promise((resolve, reject) => {
+      this.fetchLocalData(url)
+        .then(wrapData => {
+          if (wrapData && DataStore.checkTimestampValid(wrapData.timestamp)) {
+            resolve(wrapData);
+          } else {
+            this.fetchNetData(url)
+              .then(data => {
+                resolve(this._wrapData(data));
+              })
+              .catch(err => {
+                reject(err);
+              });
+          }
+        })
+        .catch(error => {
+          this.fetchNetData(url)
+            .then(data => {
+              resolve(this._wrapData(data));
+            })
+            .catch(err => {
+              reject(err);
+            });
         });
     });
   }
