@@ -3,18 +3,26 @@
  */
 import React from 'react';
 import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 export default class Repo extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
   render() {
+    const {repoData} = this.props;
+    let favoriteButton = (
+      <TouchableOpacity style={{padding: 6}} onPress={() => {}}>
+        <FontAwesome name="star-o" size={26} style={{color: 'red'}} />
+      </TouchableOpacity>
+    );
+    if (!repoData || !repoData.owner) {
+      return null;
+    }
     return (
       <TouchableOpacity style={styles.repo_root}>
         <View style={styles.cell}>
-          <Text style={styles.title}>{this.props.repoData.full_name}</Text>
-          <Text style={styles.description}>
-            {this.props.repoData.description}
-          </Text>
+          <Text style={styles.title}>{repoData.full_name}</Text>
+          <Text style={styles.description}>{repoData.description}</Text>
           <View
             style={{
               flexDirection: 'row',
@@ -25,17 +33,14 @@ export default class Repo extends React.Component {
               <Text>Author:</Text>
               <Image
                 style={{width: 22, height: 22}}
-                source={{uri: this.props.repoData.owner_avatar_url}}
+                source={{uri: repoData.owner_avatar_url}}
               />
             </View>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text>Stars:</Text>
-              <Text>{this.props.repoData.stargazers_count}</Text>
+              <Text>{repoData.stargazers_count}</Text>
             </View>
-            <Image
-              source={require('../../static/images/ic_star.png')}
-              style={styles.starIcon}
-            />
+            {favoriteButton}
           </View>
         </View>
       </TouchableOpacity>

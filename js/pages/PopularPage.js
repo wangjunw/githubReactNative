@@ -4,6 +4,7 @@ import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
 import {View, Text, StyleSheet, FlatList, RefreshControl} from 'react-native';
 import {createAppContainer} from 'react-navigation';
 import NavigationUtil from '../navigator/NavigationUtil';
+import RepoItem from '../components/Repo';
 import actions from '../action/index';
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
@@ -27,12 +28,9 @@ class PopularTabView extends Component {
     return URL + languageName + QUERY_STR;
   };
 
-  renderItem = item => {
-    return (
-      <View>
-        <Text>{JSON.stringify(item)}</Text>
-      </View>
-    );
+  renderItem = data => {
+    const repoData = data.item;
+    return <RepoItem repoData={repoData} />;
   };
   render() {
     const {popular} = this.props;
@@ -63,16 +61,6 @@ class PopularTabView extends Component {
             />
           }
         />
-
-        <Text
-          onPress={() => {
-            NavigationUtil.goPage(
-              {navigation: this.props.navigation},
-              'Detail',
-            );
-          }}>
-          跳转到详情
-        </Text>
       </View>
     );
   }

@@ -16,7 +16,7 @@ export default function onAction(state = defaultState, action) {
       return {
         ...state,
         [action.languageName]: {
-          ...[action.languageName],
+          ...state[action.languageName],
           isLoading: true,
         },
       };
@@ -24,7 +24,7 @@ export default function onAction(state = defaultState, action) {
       return {
         ...state,
         [action.languageName]: {
-          ...[action.languageName],
+          ...state[action.languageName],
           items: action.items,
           isLoading: false,
         },
@@ -33,7 +33,7 @@ export default function onAction(state = defaultState, action) {
       return {
         ...state,
         [action.languageName]: {
-          ...[action.languageName],
+          ...state[action.languageName],
           isLoading: false,
         },
       };
