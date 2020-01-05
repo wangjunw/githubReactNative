@@ -12,12 +12,14 @@ const defaultState = {};
  */
 export default function onAction(state = defaultState, action) {
   switch (action.type) {
+    // 下拉刷新
     case Types.LOAD_POPULAR:
       return {
         ...state,
         [action.languageName]: {
           ...state[action.languageName],
           isLoading: true,
+          hideLoadingMore: true,
         },
       };
     case Types.LOAD_POPULAR_SUCCESS:
@@ -25,8 +27,11 @@ export default function onAction(state = defaultState, action) {
         ...state,
         [action.languageName]: {
           ...state[action.languageName],
+          projectModes: action.projectModes,
           items: action.items,
           isLoading: false,
+          hideLoadingMore: false,
+          pageNo: action.pageNo,
         },
       };
     case Types.LOAD_POPULAR_FAIL:
@@ -35,6 +40,26 @@ export default function onAction(state = defaultState, action) {
         [action.languageName]: {
           ...state[action.languageName],
           isLoading: false,
+        },
+      };
+    // 上拉加载
+    case Types.LOAD_MORE_POPULAR_SUCCESS:
+      return {
+        ...state,
+        [action.languageName]: {
+          ...state[action.languageName],
+          projectModes: action.projectModes,
+          hideLoadingMore: false,
+          pageNo: action.pageNo,
+        },
+      };
+    case Types.LOAD_MORE_POPULAR_FAIL:
+      return {
+        ...state,
+        [action.languageName]: {
+          ...state[action.languageName],
+          hideLoadingMore: true,
+          pageNo: action.pageNo,
         },
       };
     default:
