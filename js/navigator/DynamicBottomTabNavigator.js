@@ -4,7 +4,7 @@
 import React, {Component} from 'react';
 import {createBottomTabNavigator, BottomTabBar} from 'react-navigation-tabs';
 import PopularPage from '../pages/PopularPage';
-import MyPage from '../pages/my/Index';
+import MyPage from '../pages/MyPage';
 import TrendingPage from '../pages/Trending';
 import FavoritePage from '../pages/Favorite';
 import Ionicons from 'react-native-vector-icons/AntDesign';
