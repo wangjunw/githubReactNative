@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {createAppContainer} from 'react-navigation';
-import NavigationUtil from '../navigator/NavigationUtil';
+import {isIPoneX} from '../utils/DeviceUtil';
 import Toast from 'react-native-easy-toast';
 import NavigationBar from '../components/NavigationBar';
 import RepoItem from '../components/Repo';
@@ -185,6 +185,7 @@ export default class PopularPage extends Component {
           scrollEnabled: true, //选项卡左右可滑动
           style: {
             backgroundColor: '#678',
+            height: 30, // 开启scrollEnabled后，在android上初次加载样式闪烁问题
           },
           indicatorStyle: styles.indicatorStyle, // 指示器样式(tab下的横线)
           labelStyle: styles.labelStyle, // 文字的样式
@@ -192,7 +193,7 @@ export default class PopularPage extends Component {
       }),
     );
     return (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, marginTop: isIPoneX() ? 30 : 0}}>
         {navigationBar}
         <TopNavigator />
       </View>
@@ -205,7 +206,8 @@ const styles = StyleSheet.create({
     color: 'red',
   },
   tabStyle: {
-    minWidth: 50,
+    // minWidth: 50,  //会导致初次加载样式闪烁
+    padding: 0,
   },
   indicatorStyle: {
     backgroundColor: '#fff',
@@ -213,8 +215,7 @@ const styles = StyleSheet.create({
   },
   labelStyle: {
     fontSize: 13,
-    marginBottom: 6,
-    marginTop: 6,
+    margin: 0,
   },
   listFooter: {
     alignItems: 'center',

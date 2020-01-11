@@ -12,14 +12,14 @@ import {
   RefreshControl,
   ActivityIndicator,
 } from 'react-native';
+
 import {createAppContainer} from 'react-navigation';
-import NavigationUtil from '../navigator/NavigationUtil';
+import {isIPoneX} from '../utils/DeviceUtil';
 import Toast from 'react-native-easy-toast';
 import NavigationBar from '../components/NavigationBar';
-import RepoItem from '../components/Repo';
+import TrendingRepo from '../components/TrendingRepo';
 import actions from '../action/index';
 const URL = 'https://github.com/trending/';
-const QUERY_STR = '&sort=stars';
 import {THEME_COLOR} from '../config/config';
 const pageSize = 10;
 // tab对应的组件
@@ -72,7 +72,7 @@ class TrendingTabView extends Component {
 
   renderItem = data => {
     const repoData = data.item;
-    return <RepoItem repoData={repoData} />;
+    return <TrendingRepo repoData={repoData} />;
   };
   // list底部加载更多组件
   getListFooter() {
@@ -91,7 +91,7 @@ class TrendingTabView extends Component {
           style={styles.tabContainer}
           data={store.projectModes}
           renderItem={item => this.renderItem(item)}
-          keyExtractor={item => '' + item.id}
+          keyExtractor={item => '' + (item.id || item.fullName)}
           refreshControl={
             <RefreshControl
               title={'Loading...'}
@@ -190,6 +190,7 @@ export default class TrendingPage extends Component {
           scrollEnabled: true, //选项卡左右可滑动
           style: {
             backgroundColor: '#678',
+            height: 30,
           },
           indicatorStyle: styles.indicatorStyle, // 指示器样式(tab下的横线)
           labelStyle: styles.labelStyle, // 文字的样式
@@ -197,7 +198,7 @@ export default class TrendingPage extends Component {
       }),
     );
     return (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, marginTop: isIPoneX() ? 30 : 0}}>
         {navigationBar}
         <TopNavigator />
       </View>
@@ -210,7 +211,7 @@ const styles = StyleSheet.create({
     color: 'red',
   },
   tabStyle: {
-    minWidth: 50,
+    padding: 0,
   },
   indicatorStyle: {
     backgroundColor: '#fff',
@@ -218,8 +219,7 @@ const styles = StyleSheet.create({
   },
   labelStyle: {
     fontSize: 13,
-    marginBottom: 6,
-    marginTop: 6,
+    margin: 0,
   },
   listFooter: {
     alignItems: 'center',
