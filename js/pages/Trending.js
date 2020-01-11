@@ -1,31 +1,228 @@
 /**
  * 趋势页
  */
-import React from 'react';
-import {StyleSheet, View, Text, Button} from 'react-native';
+import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  RefreshControl,
+  ActivityIndicator,
+} from 'react-native';
+import {createAppContainer} from 'react-navigation';
+import NavigationUtil from '../navigator/NavigationUtil';
+import Toast from 'react-native-easy-toast';
+import NavigationBar from '../components/NavigationBar';
+import RepoItem from '../components/Repo';
 import actions from '../action/index';
-class Trending extends React.Component {
+const URL = 'https://github.com/trending/';
+const QUERY_STR = '&sort=stars';
+import {THEME_COLOR} from '../config/config';
+const pageSize = 10;
+// tab对应的组件
+class TrendingTabView extends Component {
+  constructor(props) {
+    super(props);
+    const {tabLabel} = this.props;
+    this.languageName = tabLabel;
+    this.canLoadMore = false; //控制避免多次触发上拉加载
+  }
+  componentDidMount() {
+    this.loadData();
+  }
+  loadData = loadMore => {
+    const url = this.getFetchUrl(this.languageName);
+    const store = this._store();
+    const {onLoadTrendingData, onLoadMoreTrending} = this.props;
+    // 如果是上拉加载更多
+    if (loadMore) {
+      onLoadMoreTrending(
+        this.languageName,
+        ++store.pageNo,
+        pageSize,
+        store.items,
+        msg => {
+          this.refs['toast'].show(msg);
+        },
+      );
+    } else {
+      // 首次加载
+      onLoadTrendingData(this.languageName, url, pageSize);
+    }
+  };
+  _store = () => {
+    const {trending} = this.props;
+    let store = trending[this.languageName];
+    if (!store) {
+      store = {
+        items: [],
+        isLoading: false,
+        projectModes: [],
+        hideLoadingMore: true, // 默认隐藏加载更多
+      };
+    }
+    return store;
+  };
+  getFetchUrl = languageName => {
+    return URL + languageName + 'since=daily';
+  };
+
+  renderItem = data => {
+    const repoData = data.item;
+    return <RepoItem repoData={repoData} />;
+  };
+  // list底部加载更多组件
+  getListFooter() {
+    return this._store().hideLoadingMore ? null : (
+      <View style={styles.listFooter}>
+        <ActivityIndicator style={styles.indicator} />
+        <Text>正在加载更多</Text>
+      </View>
+    );
+  }
   render() {
-    const {navigation} = this.props;
+    let store = this._store();
     return (
       <View>
-        <Text>目前趋势</Text>
-        <Button
-          title="改变颜色"
-          onPress={() => {
-            this.props.onThemeChange('yellow');
+        <FlatList
+          style={styles.tabContainer}
+          data={store.projectModes}
+          renderItem={item => this.renderItem(item)}
+          keyExtractor={item => '' + item.id}
+          refreshControl={
+            <RefreshControl
+              title={'Loading...'}
+              titleColor={THEME_COLOR}
+              colors={[THEME_COLOR]}
+              refreshing={store.isLoading}
+              onRefresh={() => {
+                this.loadData();
+              }}
+              tintColor={THEME_COLOR}
+            />
+          }
+          ListFooterComponent={() => this.getListFooter()}
+          onEndReached={() => {
+            // 加延时避免极端情况下onMomentumScrollBegin回调晚执行的问题
+            setTimeout(() => {
+              if (this.canLoadMore) {
+                this.loadData(true);
+                this.canLoadMore = false;
+              }
+            }, 100);
           }}
+          onMomentumScrollBegin={() => {
+            // 列表开始滚动时触发
+            this.canLoadMore = true;
+          }}
+          onEndReachedThreshold={0.5}
         />
+        <Toast ref={'toast'} position={'center'} />
+      </View>
+    );
+  }
+}
+const mapStateToProps = state => ({
+  trending: state.trending,
+});
+const mapDispatchToProps = dispatch => ({
+  onLoadTrendingData: (languageName, url, pageSize) => {
+    return dispatch(actions.onLoadTrendingData(languageName, url, pageSize));
+  },
+  onLoadMoreTrending: (languageName, pageNo, pageSize, items, callback) => {
+    return dispatch(
+      actions.onLoadMoreTrending(
+        languageName,
+        pageNo,
+        pageSize,
+        items,
+        callback,
+      ),
+    );
+  },
+});
+// connect并非只能在默认导出的组件上使用，可以在任意组件上使用
+const TrendingTabViewWithRedux = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(TrendingTabView);
+
+export default class TrendingPage extends Component {
+  constructor(props) {
+    super(props);
+    this.tabNames = ['All', 'C', 'C#', 'PHP'];
+  }
+  _getTabs() {
+    const tabs = {};
+    this.tabNames.forEach((item, index) => {
+      tabs[`tab${index}`] = {
+        screen: props => (
+          <TrendingTabViewWithRedux {...props} tabLabel={item} />
+        ), //返回组件可以传递函数
+        navigationOptions: {
+          title: item,
+        },
+      };
+    });
+    return tabs;
+  }
+  render() {
+    let statusBarStyle = {
+      backgroundColor: THEME_COLOR,
+    };
+    let navigationBar = (
+      <NavigationBar
+        title={'最热'}
+        statusBar={statusBarStyle}
+        style={{backgroundColor: THEME_COLOR}}
+      />
+    );
+    const TopNavigator = createAppContainer(
+      createMaterialTopTabNavigator(this._getTabs(), {
+        lazy: true,
+        scrollEnabled: true,
+        tabBarOptions: {
+          tabStyle: styles.tabStyle,
+          upperCaseLabel: false, //标签不大写
+          scrollEnabled: true, //选项卡左右可滑动
+          style: {
+            backgroundColor: '#678',
+          },
+          indicatorStyle: styles.indicatorStyle, // 指示器样式(tab下的横线)
+          labelStyle: styles.labelStyle, // 文字的样式
+        },
+      }),
+    );
+    return (
+      <View style={{flex: 1}}>
+        {navigationBar}
+        <TopNavigator />
       </View>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  test: '22',
+const styles = StyleSheet.create({
+  tabContainer: {
+    color: 'red',
+  },
+  tabStyle: {
+    minWidth: 50,
+  },
+  indicatorStyle: {
+    backgroundColor: '#fff',
+    height: 2,
+  },
+  labelStyle: {
+    fontSize: 13,
+    marginBottom: 6,
+    marginTop: 6,
+  },
+  listFooter: {
+    alignItems: 'center',
+  },
+  indicator: {color: 'red', margin: 10},
 });
-const mapDispatchToProps = dispatch => ({
-  onThemeChange: theme => dispatch(actions.onThemeChange(theme)),
-});
-export default connect(mapStateToProps, mapDispatchToProps)(Trending);

@@ -1,4 +1,9 @@
 import {AsyncStorage} from 'react-native';
+import Trending from 'GitHubTrending'; //获取trending模块数据
+export const FLAG_STORAGE = {
+  flag_popular: 'popular',
+  flag_trending: 'trending',
+};
 export default class DataStore {
   /**
    * 检查timestamp是否在有效期内
@@ -46,34 +51,53 @@ export default class DataStore {
       });
     });
   }
-  // 获取网络数据
-  fetchNetData(url) {
+  /**
+   * 获取网络数据
+   * @param {string} url
+   * @param {string} flag 区分是最热页还是趋势页调用
+   */
+  fetchNetData(url, flag) {
     return new Promise((resolve, reject) => {
-      fetch(url)
-        .then(res => {
-          if (res.ok) {
-            return res.json();
-          }
-          throw new Error('network is faild！');
-        })
-        .then(data => {
-          this.saveData(url, data);
-          resolve(data);
-        })
-        .catch(err => {
-          reject(err);
-        });
+      if (flag !== FLAG_STORAGE.flag_trending) {
+        fetch(url)
+          .then(res => {
+            if (res.ok) {
+              return res.json();
+            }
+            throw new Error('network is faild！');
+          })
+          .then(data => {
+            this.saveData(url, data);
+            resolve(data);
+          })
+          .catch(err => {
+            reject(err);
+          });
+      } else {
+        new Trending()
+          .fetchTrending(url)
+          .then(items => {
+            if (!items) {
+              throw new Error('response is null');
+            }
+            this.saveData(url, items);
+            resolve(items);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      }
     });
   }
   // 入口方法
-  fetchData(url) {
+  fetchData(url, flag) {
     return new Promise((resolve, reject) => {
       this.fetchLocalData(url)
         .then(wrapData => {
           if (wrapData && DataStore.checkTimestampValid(wrapData.timestamp)) {
             resolve(wrapData);
           } else {
-            this.fetchNetData(url)
+            this.fetchNetData(url, flag)
               .then(data => {
                 resolve(this._wrapData(data));
               })
@@ -83,7 +107,7 @@ export default class DataStore {
           }
         })
         .catch(error => {
-          this.fetchNetData(url)
+          this.fetchNetData(url, flag)
             .then(data => {
               resolve(this._wrapData(data));
             })

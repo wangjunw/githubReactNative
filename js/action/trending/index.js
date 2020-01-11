@@ -6,15 +6,15 @@ import {handleData} from '../ActionUtil';
  * @param {string} languageName
  * @param {string} url：接口地址
  */
-export function onLoadPopularData(languageName, url, pageSize) {
+export function onLoadTrendingData(languageName, url, pageSize) {
   return dispatch => {
     dispatch({type: Types.LOAD_POPULAR, languageName});
     let dataStore = new DataStore();
     dataStore
-      .fetchData(url, FLAG_STORAGE.flag_popular)
+      .fetchData(url, FLAG_STORAGE.flag_trending)
       .then(res => {
         handleData(
-          Types.LOAD_POPULAR_SUCCESS,
+          Types.LOAD_TRENDING_SUCCESS,
           dispatch,
           languageName,
           res,
@@ -35,7 +35,7 @@ export function onLoadPopularData(languageName, url, pageSize) {
  * @param {Array} dataArr 原始数据，即全部数据
  * @param {Function} callback 加载完成要执行的回调
  */
-export function onLoadMorePopular(
+export function onLoadMoreTrending(
   languageName,
   pageNo,
   pageSize,
@@ -50,7 +50,7 @@ export function onLoadMorePopular(
           callback('已经没有更多数据了！');
         }
         dispatch({
-          type: Types.LOAD_MORE_POPULAR_FAIL,
+          type: Types.LOAD_MORE_TRENDING_FAIL,
           error: 'no more',
           languageName: languageName,
           pageNo: --pageNo,
@@ -63,7 +63,7 @@ export function onLoadMorePopular(
             ? dataArr.length
             : pageSize * pageNo;
         dispatch({
-          type: Types.LOAD_MORE_POPULAR_SUCCESS,
+          type: Types.LOAD_MORE_TRENDING_SUCCESS,
           languageName,
           pageNo,
           projectModes: dataArr.slice(0, max),

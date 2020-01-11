@@ -1,6 +1,7 @@
 import {combineReducers} from 'redux';
 import theme from './theme';
 import popular from './popular/index';
+import trending from './trending';
 import {RootNavigator, rootCom} from '../navigator/AppNavigator';
 
 /**
@@ -24,6 +25,7 @@ const indexReducer = combineReducers({
   nav: navReducer,
   theme,
   popular,
+  trending,
 });
 
 export default indexReducer;
