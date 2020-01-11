@@ -8,7 +8,7 @@ import {handleData} from '../ActionUtil';
  */
 export function onLoadTrendingData(languageName, url, pageSize) {
   return dispatch => {
-    dispatch({type: Types.LOAD_POPULAR, languageName});
+    dispatch({type: Types.LOAD_TRENDING, languageName});
     let dataStore = new DataStore();
     dataStore
       .fetchData(url, FLAG_STORAGE.flag_trending)
@@ -22,7 +22,7 @@ export function onLoadTrendingData(languageName, url, pageSize) {
         );
       })
       .catch(error => {
-        dispatch({type: Types.LOAD_POPULAR_FAIL, languageName, error});
+        dispatch({type: Types.LOAD_TRENDING_FAIL, languageName, error});
       });
   };
 }

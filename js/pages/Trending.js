@@ -67,7 +67,7 @@ class TrendingTabView extends Component {
     return store;
   };
   getFetchUrl = languageName => {
-    return URL + languageName + 'since=daily';
+    return URL + languageName + '?since=daily';
   };
 
   renderItem = data => {
@@ -190,7 +190,6 @@ export default class TrendingPage extends Component {
           scrollEnabled: true, //选项卡左右可滑动
           style: {
             backgroundColor: '#678',
-            height: 30,
           },
           indicatorStyle: styles.indicatorStyle, // 指示器样式(tab下的横线)
           labelStyle: styles.labelStyle, // 文字的样式
@@ -211,7 +210,7 @@ const styles = StyleSheet.create({
     color: 'red',
   },
   tabStyle: {
-    padding: 0,
+    minWidth: 50,
   },
   indicatorStyle: {
     backgroundColor: '#fff',
@@ -219,7 +218,8 @@ const styles = StyleSheet.create({
   },
   labelStyle: {
     fontSize: 13,
-    margin: 0,
+    marginBottom: 6,
+    marginTop: 6,
   },
   listFooter: {
     alignItems: 'center',

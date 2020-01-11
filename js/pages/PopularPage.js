@@ -185,7 +185,6 @@ export default class PopularPage extends Component {
           scrollEnabled: true, //选项卡左右可滑动
           style: {
             backgroundColor: '#678',
-            height: 30, // 开启scrollEnabled后，在android上初次加载样式闪烁问题
           },
           indicatorStyle: styles.indicatorStyle, // 指示器样式(tab下的横线)
           labelStyle: styles.labelStyle, // 文字的样式
@@ -206,8 +205,7 @@ const styles = StyleSheet.create({
     color: 'red',
   },
   tabStyle: {
-    // minWidth: 50,  //会导致初次加载样式闪烁
-    padding: 0,
+    minWidth: 50,
   },
   indicatorStyle: {
     backgroundColor: '#fff',
@@ -215,7 +213,8 @@ const styles = StyleSheet.create({
   },
   labelStyle: {
     fontSize: 13,
-    margin: 0,
+    marginBottom: 6,
+    marginTop: 6,
   },
   listFooter: {
     alignItems: 'center',
