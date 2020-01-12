@@ -41,6 +41,7 @@ export default class TrendingDialog extends Component {
             {TimeSpans.map((item, index, arr) => {
               return (
                 <TouchableOpacity
+                  key={item.showText}
                   onPress={() => {
                     onSelect(item);
                   }}>
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.6)',
-    paddingTop: isIPoneX ? 30 : 0,
+    paddingTop: isIPoneX() ? 30 : 0,
   },
   arrow: {
     marginTop: 40,
