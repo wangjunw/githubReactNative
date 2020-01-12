@@ -11,11 +11,14 @@ import {
   FlatList,
   RefreshControl,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 
 import {createAppContainer} from 'react-navigation';
 import {isIPoneX} from '../utils/DeviceUtil';
 import Toast from 'react-native-easy-toast';
+import TrendingDialog, {TimeSpans} from '../components/TrendingDialog';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import NavigationBar from '../components/NavigationBar';
 import TrendingRepo from '../components/TrendingRepo';
 import actions from '../action/index';
@@ -154,6 +157,9 @@ export default class TrendingPage extends Component {
   constructor(props) {
     super(props);
     this.tabNames = ['All', 'C', 'C#', 'PHP'];
+    this.state = {
+      tiemSpan: TimeSpans[0],
+    };
   }
   _getTabs() {
     const tabs = {};
@@ -169,13 +175,47 @@ export default class TrendingPage extends Component {
     });
     return tabs;
   }
+  // title位置
+  renderTitleView = () => {
+    console.log('3222', this.state.tiemSpan);
+    return (
+      <View>
+        <TouchableOpacity onPress={() => {}}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={{fontSize: 18, color: '#fff', fontWeight: '400'}}>
+              趋势{this.state.timeSpan.showText}
+            </Text>
+            <MaterialIcons
+              name={'arrow-drop-down'}
+              size={22}
+              style={{color: 'white'}}
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+  onSelectTimeSpan = time => {
+    this.dialog.close();
+    this.setState({
+      timeSpan: time,
+    });
+  };
+  renderTrendingDialog = () => {
+    return (
+      <TrendingDialog
+        ref={dialog => (this.dialog = dialog)}
+        onSelect={time => this.onSelectTimeSpan(time)}
+      />
+    );
+  };
   render() {
     let statusBarStyle = {
       backgroundColor: THEME_COLOR,
     };
     let navigationBar = (
       <NavigationBar
-        title={'最热'}
+        titleView={this.renderTitleView()}
         statusBar={statusBarStyle}
         style={{backgroundColor: THEME_COLOR}}
       />
@@ -200,6 +240,7 @@ export default class TrendingPage extends Component {
       <View style={{flex: 1, marginTop: isIPoneX() ? 30 : 0}}>
         {navigationBar}
         <TopNavigator />
+        {this.renderTrendingDialog()}
       </View>
     );
   }

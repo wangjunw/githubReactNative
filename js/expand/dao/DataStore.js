@@ -77,7 +77,6 @@ export default class DataStore {
         new Trending()
           .fetchTrending(url)
           .then(items => {
-            console.log('hahha', items);
             if (!items) {
               throw new Error('response is null');
             }
@@ -97,10 +96,8 @@ export default class DataStore {
       this.fetchLocalData(url)
         .then(wrapData => {
           if (wrapData && DataStore.checkTimestampValid(wrapData.timestamp)) {
-            console.log(333);
             resolve(wrapData);
           } else {
-            console.log(44444);
             this.fetchNetData(url, flag)
               .then(data => {
                 resolve(this._wrapData(data));
