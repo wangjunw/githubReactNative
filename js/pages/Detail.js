@@ -2,7 +2,7 @@
  * 详情页
  */
 import React, {Component} from 'react';
-import {Text, StyleSheet, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {WebView} from 'react-native-webview';
 import NavigationBar from '../components/NavigationBar';
 import NavigationUtil from '../utils/NavigationUtil';
@@ -16,6 +16,7 @@ export default class DetailPage extends Component {
     super(props);
     this.params = this.props.navigation.state.params;
     const {projectModel} = this.params;
+
     this.url =
       projectModel.html_url || TRENDING_BASE_URL + projectModel.fullName;
     const title = projectModel.full_name || projectModel.fullName;
@@ -24,7 +25,9 @@ export default class DetailPage extends Component {
       url: this.url,
       canGoBack: false, //详情页webview中的返回上一级
     };
-    this.backPress = new BackPressComponent({backPress: this.onBackPress});
+    this.backPress = new BackPressComponent({
+      backPress: () => this.onBackPress(),
+    });
   }
   onBackPress() {
     this.onBack();
@@ -72,7 +75,9 @@ export default class DetailPage extends Component {
     let navigationBar = (
       <NavigationBar
         title={this.state.title}
-        leftButton={ViewUtil.getLeftBackButton(this.onBack)}
+        leftButton={ViewUtil.getLeftBackButton(() => {
+          this.onBack();
+        })}
         style={{backgroundColor: THEME_COLOR}}
         titleLayoutStyle={titleLayoutStyle}
         rightButton={this.renderRightButton()}
@@ -82,12 +87,14 @@ export default class DetailPage extends Component {
       <View style={styles.container}>
         {navigationBar}
         <WebView
-          ref={web => (this.webView = web)}
+          ref={webView => {
+            this.webView = webView;
+          }}
           startInLoadingState={true}
+          source={{uri: this.state.url}}
           onNavigationStateChange={e => {
             this.onNavigationStateChange(e);
           }}
-          source={{uri: this.state.url}}
         />
       </View>
     );
@@ -96,6 +103,7 @@ export default class DetailPage extends Component {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     marginTop: isIPoneX() ? 30 : 0,
   },
 });

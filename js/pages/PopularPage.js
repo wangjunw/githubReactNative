@@ -18,7 +18,7 @@ import actions from '../action/index';
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
 import {THEME_COLOR} from '../config/config';
-import NavigationUtil from '../utils/NavigationUtil';
+
 const pageSize = 10;
 // tab对应的组件
 class PopularTabView extends Component {
@@ -70,14 +70,7 @@ class PopularTabView extends Component {
 
   renderItem = data => {
     const repoData = data.item;
-    return (
-      <RepoItem
-        repoData={repoData}
-        onSelect={() => {
-          NavigationUtil.goPage({projectModel: repoData}, 'Detail');
-        }}
-      />
-    );
+    return <RepoItem repoData={repoData} />;
   };
   // list底部加载更多组件
   getListFooter() {

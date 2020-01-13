@@ -56,7 +56,6 @@ class TrendingTabView extends Component {
   }
   loadData = loadMore => {
     const url = this.getFetchUrl(this.languageName);
-    console.log(2222, url);
     const store = this._store();
     const {onLoadTrendingData, onLoadMoreTrending} = this.props;
     // 如果是上拉加载更多

@@ -4,6 +4,7 @@
 import React from 'react';
 import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import NavigationUtil from '../utils/NavigationUtil';
 export default class Repo extends React.Component {
   constructor(props) {
     super(props);
@@ -19,7 +20,11 @@ export default class Repo extends React.Component {
       return null;
     }
     return (
-      <TouchableOpacity style={styles.repo_root}>
+      <TouchableOpacity
+        style={styles.repo_root}
+        onPress={() => {
+          NavigationUtil.goPage({projectModel: repoData}, 'Detail');
+        }}>
         <View style={styles.cell}>
           <Text style={styles.title}>{repoData.full_name}</Text>
           <Text style={styles.description}>{repoData.description}</Text>

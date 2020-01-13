@@ -91,7 +91,6 @@ export default class DataStore {
   }
   // 入口方法
   fetchData(url, flag) {
-    console.log(flag);
     return new Promise((resolve, reject) => {
       this.fetchLocalData(url)
         .then(wrapData => {
