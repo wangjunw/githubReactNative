@@ -3,7 +3,7 @@
  */
 import React, {Component} from 'react';
 import {Text, StyleSheet, View} from 'react-native';
-import NavigationUtil from '../navigator/NavigationUtil';
+import NavigationUtil from '../utils/NavigationUtil';
 export default class WelcomePage extends Component {
   componentDidMount() {
     this.timer = setTimeout(() => {

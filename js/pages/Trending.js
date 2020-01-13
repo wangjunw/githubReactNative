@@ -25,6 +25,7 @@ import TrendingRepo from '../components/TrendingRepo';
 import actions from '../action/index';
 const URL = 'https://github.com/trending/';
 import {THEME_COLOR} from '../config/config';
+import NavigationUtil from '../utils/NavigationUtil';
 const pageSize = 10;
 const EVENT_TIME_SPAN_CHANGE = 'EVENT_TIME_SPAN_CHANGE';
 // tab对应的组件
@@ -93,7 +94,14 @@ class TrendingTabView extends Component {
 
   renderItem = data => {
     const repoData = data.item;
-    return <TrendingRepo repoData={repoData} />;
+    return (
+      <TrendingRepo
+        repoData={repoData}
+        onSelect={() => {
+          NavigationUtil.goPage({projectModel: repoData}, 'Detail');
+        }}
+      />
+    );
   };
   // list底部加载更多组件
   getListFooter() {

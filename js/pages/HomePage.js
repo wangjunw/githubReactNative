@@ -2,21 +2,26 @@
  * 项目启动引导流程之首页
  */
 import React, {Component} from 'react';
-import NavigationUtil from '../navigator/NavigationUtil';
+import NavigationUtil from '../utils/NavigationUtil';
 import DynamicBottomTabNavigator from '../navigator/DynamicBottomTabNavigator';
 import {BackHandler} from 'react-native';
 import {NavigationActions} from 'react-navigation';
 import {connect} from 'react-redux';
+import BackPressComponent from '../components/BackPressComponent';
 class HomePage extends Component {
+  constructor(props) {
+    super(props);
+    this.backPress = new BackPressComponent({backPress: this.onBackPress});
+  }
   /**
    * 处理安卓机的物理返回键，如果不是首页返回上一层
    * 默认情况，点击返回键就退出应用
    */
   componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+    this.backPress.componentDidMount();
   }
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
+    this.backPress.componentWillUnmount();
   }
   onBackPress = () => {
     const {dispatch, nav} = this.props;
