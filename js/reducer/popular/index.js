@@ -27,7 +27,7 @@ export default function onAction(state = defaultState, action) {
         ...state,
         [action.languageName]: {
           ...state[action.languageName],
-          projectModes: action.projectModes,
+          projectModels: action.projectModels,
           items: action.items,
           isLoading: false,
           hideLoadingMore: false,
@@ -48,7 +48,7 @@ export default function onAction(state = defaultState, action) {
         ...state,
         [action.languageName]: {
           ...state[action.languageName],
-          projectModes: action.projectModes,
+          projectModels: action.projectModels,
           hideLoadingMore: false,
           pageNo: action.pageNo,
         },

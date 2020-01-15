@@ -5,25 +5,21 @@ import React from 'react';
 import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import HtmlView from 'react-native-htmlview'; //转换html字符串
-export default class TrendingRepo extends React.Component {
+import BaseItem from '../components/BaseItem';
+export default class TrendingRepo extends BaseItem {
   constructor(props) {
     super(props);
   }
   render() {
-    const {repoData} = this.props;
-    let favoriteButton = (
-      <TouchableOpacity style={{padding: 6}} onPress={() => {}}>
-        <FontAwesome name="star-o" size={26} style={{color: 'red'}} />
-      </TouchableOpacity>
-    );
-    if (!repoData) {
+    const {projectModel} = this.props;
+    if (!projectModel) {
       return null;
     }
-    let description = 'p' + repoData.description + '</p>';
+    let description = 'p' + projectModel.description + '</p>';
     return (
       <TouchableOpacity style={styles.repo_root}>
         <View style={styles.cell}>
-          <Text style={styles.title}>{repoData.fullName}</Text>
+          <Text style={styles.title}>{projectModel.fullName}</Text>
           <HtmlView
             value={description}
             onLinkPress={url => {}}
@@ -32,7 +28,7 @@ export default class TrendingRepo extends React.Component {
               a: styles.description,
             }}
           />
-          <Text style={styles.description}>{repoData.meta}</Text>
+          <Text style={styles.description}>{projectModel.meta}</Text>
           <View
             style={{
               flexDirection: 'row',
@@ -41,7 +37,7 @@ export default class TrendingRepo extends React.Component {
             }}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text>Built by:</Text>
-              {repoData.contribution.map((item, index, arr) => {
+              {projectModel.contribution.map((item, index, arr) => {
                 return (
                   <Image
                     key={index}
@@ -53,9 +49,9 @@ export default class TrendingRepo extends React.Component {
             </View>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text>Stars:</Text>
-              <Text>{repoData.starCount}</Text>
+              <Text>{projectModel.starCount}</Text>
             </View>
-            {favoriteButton}
+            {this._favoriteIcon()}
           </View>
         </View>
       </TouchableOpacity>

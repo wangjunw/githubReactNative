@@ -3,31 +3,27 @@
  */
 import React from 'react';
 import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import NavigationUtil from '../utils/NavigationUtil';
-export default class Repo extends React.Component {
+import BaseItem from '../components/BaseItem';
+export default class Repo extends BaseItem {
   constructor(props) {
     super(props);
   }
   render() {
-    const {repoData} = this.props;
-    let favoriteButton = (
-      <TouchableOpacity style={{padding: 6}} onPress={() => {}}>
-        <FontAwesome name="star-o" size={26} style={{color: 'red'}} />
-      </TouchableOpacity>
-    );
-    if (!repoData || !repoData.owner) {
+    const {projectModel} = this.props;
+    const {item} = projectModel;
+    if (!item || !item.owner) {
       return null;
     }
     return (
       <TouchableOpacity
         style={styles.repo_root}
         onPress={() => {
-          NavigationUtil.goPage({projectModel: repoData}, 'Detail');
+          NavigationUtil.goPage({item}, 'Detail');
         }}>
         <View style={styles.cell}>
-          <Text style={styles.title}>{repoData.full_name}</Text>
-          <Text style={styles.description}>{repoData.description}</Text>
+          <Text style={styles.title}>{item.full_name}</Text>
+          <Text style={styles.description}>{item.description}</Text>
           <View
             style={{
               flexDirection: 'row',
@@ -38,14 +34,14 @@ export default class Repo extends React.Component {
               <Text>Author:</Text>
               <Image
                 style={{width: 22, height: 22}}
-                source={{uri: repoData.owner_avatar_url}}
+                source={{uri: item.owner_avatar_url}}
               />
             </View>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text>Stars:</Text>
-              <Text>{repoData.stargazers_count}</Text>
+              <Text>{item.stargazers_count}</Text>
             </View>
-            {favoriteButton}
+            {this._favoriteIcon()}
           </View>
         </View>
       </TouchableOpacity>

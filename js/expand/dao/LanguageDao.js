@@ -2,7 +2,7 @@
  * popular和trending模块都会用到，用flag标识
  */
 
-import {AsyncStorage} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import keys from '../../../static/data/keys.json';
 export let FLAG_LANGUAGE = {
   flag_language: 'flag_language_language',

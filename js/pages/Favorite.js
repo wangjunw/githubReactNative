@@ -5,6 +5,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {StyleSheet, View, Text} from 'react-native';
 import actions from '../action/index';
+import NavigationBar from '../components/NavigationBar';
 class Favorite extends React.Component {
   render() {
     return (

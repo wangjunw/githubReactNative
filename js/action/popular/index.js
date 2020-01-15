@@ -1,12 +1,13 @@
 import Types from '../types';
 import DataStore, {FLAG_STORAGE} from '../../expand/dao/DataStore';
-import {handleData} from '../ActionUtil';
+import {handleData, _projectModels} from '../ActionUtil';
 /**
  * 获取最热数据的异步action
  * @param {string} languageName
  * @param {string} url：接口地址
+ * @param {*} favoriteDao
  */
-export function onLoadPopularData(languageName, url, pageSize) {
+export function onLoadPopularData(languageName, url, pageSize, favoriteDao) {
   return dispatch => {
     dispatch({type: Types.LOAD_POPULAR, languageName});
     let dataStore = new DataStore();
@@ -19,6 +20,7 @@ export function onLoadPopularData(languageName, url, pageSize) {
           languageName,
           res,
           pageSize,
+          favoriteDao,
         );
       })
       .catch(error => {
@@ -40,6 +42,7 @@ export function onLoadMorePopular(
   pageNo,
   pageSize,
   dataArr = [],
+  favoriteDao,
   callback,
 ) {
   return dispatch => {
@@ -54,7 +57,7 @@ export function onLoadMorePopular(
           error: 'no more',
           languageName: languageName,
           pageNo: --pageNo,
-          projectModes: dataArr,
+          projectModels: dataArr,
         });
       } else {
         // 不到最后一页
@@ -62,11 +65,13 @@ export function onLoadMorePopular(
           pageSize * pageNo > dataArr.length
             ? dataArr.length
             : pageSize * pageNo;
-        dispatch({
-          type: Types.LOAD_MORE_POPULAR_SUCCESS,
-          languageName,
-          pageNo,
-          projectModes: dataArr.slice(0, max),
+        _projectModels(dataArr.slice(0, max), favoriteDao, projectModels => {
+          dispatch({
+            type: Types.LOAD_MORE_POPULAR_SUCCESS,
+            languageName,
+            pageNo,
+            projectModels,
+          });
         });
       }
     }, 500);

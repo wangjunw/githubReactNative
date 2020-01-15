@@ -1,4 +1,4 @@
-import {AsyncStorage} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import Trending from 'GitHubTrending'; //获取trending模块数据
 export const FLAG_STORAGE = {
   flag_popular: 'popular',

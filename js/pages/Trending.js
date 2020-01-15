@@ -95,7 +95,7 @@ class TrendingTabView extends Component {
     const repoData = data.item;
     return (
       <TrendingRepo
-        repoData={repoData}
+        projectModel={repoData}
         onSelect={() => {
           NavigationUtil.goPage({projectModel: repoData}, 'Detail');
         }}

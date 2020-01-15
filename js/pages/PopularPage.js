@@ -11,14 +11,17 @@ import {
 } from 'react-native';
 import {createAppContainer} from 'react-navigation';
 import {isIPoneX} from '../utils/DeviceUtil';
+import FavoriteUtil from '../utils/FavoriteUtil';
 import Toast from 'react-native-easy-toast';
 import NavigationBar from '../components/NavigationBar';
 import RepoItem from '../components/Repo';
 import actions from '../action/index';
+import FavoriteDao from '../expand/dao/FavoriteDao';
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
 import {THEME_COLOR} from '../config/config';
-
+import {FLAG_STORAGE} from '../expand/dao/DataStore';
+const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
 const pageSize = 10;
 // tab对应的组件
 class PopularTabView extends Component {
@@ -42,13 +45,14 @@ class PopularTabView extends Component {
         ++store.pageNo,
         pageSize,
         store.items,
+        favoriteDao,
         msg => {
           this.refs['toast'].show(msg);
         },
       );
     } else {
       // 首次加载
-      onLoadPopularData(this.languageName, url, pageSize);
+      onLoadPopularData(this.languageName, url, pageSize, favoriteDao);
     }
   };
   _store = () => {
@@ -58,7 +62,7 @@ class PopularTabView extends Component {
       store = {
         items: [],
         isLoading: false,
-        projectModes: [],
+        projectModels: [],
         hideLoadingMore: true, // 默认隐藏加载更多
       };
     }
@@ -70,7 +74,19 @@ class PopularTabView extends Component {
 
   renderItem = data => {
     const repoData = data.item;
-    return <RepoItem repoData={repoData} />;
+    return (
+      <RepoItem
+        projectModel={repoData}
+        onFavorite={(repoData, isFavorite) =>
+          FavoriteUtil.onFavorite(
+            favoriteDao,
+            repoData.item,
+            isFavorite,
+            FLAG_STORAGE.flag_popular,
+          )
+        }
+      />
+    );
   };
   // list底部加载更多组件
   getListFooter() {
@@ -87,9 +103,9 @@ class PopularTabView extends Component {
       <View>
         <FlatList
           style={styles.tabContainer}
-          data={store.projectModes}
+          data={store.projectModels}
           renderItem={item => this.renderItem(item)}
-          keyExtractor={item => '' + item.id}
+          keyExtractor={item => '' + item.item.id}
           refreshControl={
             <RefreshControl
               title={'Loading...'}
@@ -127,16 +143,26 @@ const mapStateToProps = state => ({
   popular: state.popular,
 });
 const mapDispatchToProps = dispatch => ({
-  onLoadPopularData: (languageName, url, pageSize) => {
-    return dispatch(actions.onLoadPopularData(languageName, url, pageSize));
+  onLoadPopularData: (languageName, url, pageSize, favoriteDao) => {
+    return dispatch(
+      actions.onLoadPopularData(languageName, url, pageSize, favoriteDao),
+    );
   },
-  onLoadMorePopular: (languageName, pageNo, pageSize, items, callback) => {
+  onLoadMorePopular: (
+    languageName,
+    pageNo,
+    pageSize,
+    items,
+    favoriteDao,
+    callback,
+  ) => {
     return dispatch(
       actions.onLoadMorePopular(
         languageName,
         pageNo,
         pageSize,
         items,
+        favoriteDao,
         callback,
       ),
     );
