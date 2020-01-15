@@ -3,7 +3,6 @@
  */
 import React from 'react';
 import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import HtmlView from 'react-native-htmlview'; //转换html字符串
 import BaseItem from '../components/BaseItem';
 export default class TrendingRepo extends BaseItem {
@@ -12,14 +11,17 @@ export default class TrendingRepo extends BaseItem {
   }
   render() {
     const {projectModel} = this.props;
-    if (!projectModel) {
+    const {item} = projectModel;
+    if (!item) {
       return null;
     }
-    let description = 'p' + projectModel.description + '</p>';
+    let description = 'p' + item.description + '</p>';
     return (
-      <TouchableOpacity style={styles.repo_root}>
+      <TouchableOpacity
+        style={styles.repo_root}
+        onPress={() => this.onItemClick()}>
         <View style={styles.cell}>
-          <Text style={styles.title}>{projectModel.fullName}</Text>
+          <Text style={styles.title}>{item.fullName}</Text>
           <HtmlView
             value={description}
             onLinkPress={url => {}}
@@ -28,7 +30,7 @@ export default class TrendingRepo extends BaseItem {
               a: styles.description,
             }}
           />
-          <Text style={styles.description}>{projectModel.meta}</Text>
+          <Text style={styles.description}>{item.meta}</Text>
           <View
             style={{
               flexDirection: 'row',
@@ -37,7 +39,7 @@ export default class TrendingRepo extends BaseItem {
             }}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text>Built by:</Text>
-              {projectModel.contribution.map((item, index, arr) => {
+              {item.contribution.map((item, index, arr) => {
                 return (
                   <Image
                     key={index}
@@ -49,7 +51,7 @@ export default class TrendingRepo extends BaseItem {
             </View>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text>Stars:</Text>
-              <Text>{projectModel.starCount}</Text>
+              <Text>{item.starCount}</Text>
             </View>
             {this._favoriteIcon()}
           </View>

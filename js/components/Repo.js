@@ -18,9 +18,7 @@ export default class Repo extends BaseItem {
     return (
       <TouchableOpacity
         style={styles.repo_root}
-        onPress={() => {
-          NavigationUtil.goPage({item}, 'Detail');
-        }}>
+        onPress={() => this.onItemClick()}>
         <View style={styles.cell}>
           <Text style={styles.title}>{item.full_name}</Text>
           <Text style={styles.description}>{item.description}</Text>
@@ -31,10 +29,10 @@ export default class Repo extends BaseItem {
               justifyContent: 'space-between',
             }}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Text>Author:</Text>
+              <Text>Author：</Text>
               <Image
                 style={{width: 22, height: 22}}
-                source={{uri: item.owner_avatar_url}}
+                source={{uri: item.owner.avatar_url}}
               />
             </View>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>

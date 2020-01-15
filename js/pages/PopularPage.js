@@ -21,6 +21,7 @@ const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
 import {THEME_COLOR} from '../config/config';
 import {FLAG_STORAGE} from '../expand/dao/DataStore';
+import NavigationUtil from '../utils/NavigationUtil';
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
 const pageSize = 10;
 // tab对应的组件
@@ -85,6 +86,16 @@ class PopularTabView extends Component {
             FLAG_STORAGE.flag_popular,
           )
         }
+        onSelect={callback => {
+          NavigationUtil.goPage(
+            {
+              projectModel: repoData.item,
+              flag: FLAG_STORAGE.flag_popular,
+              callback,
+            },
+            'Detail',
+          );
+        }}
       />
     );
   };

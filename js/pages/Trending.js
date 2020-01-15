@@ -22,12 +22,16 @@ import TrendingDialog, {TimeSpans} from '../components/TrendingDialog';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import NavigationBar from '../components/NavigationBar';
 import TrendingRepo from '../components/TrendingRepo';
+import FavoriteUtil from '../utils/FavoriteUtil';
 import actions from '../action/index';
 const URL = 'https://github.com/trending/';
 import {THEME_COLOR} from '../config/config';
 import NavigationUtil from '../utils/NavigationUtil';
+import FavoriteDao from '../expand/dao/FavoriteDao';
+import {FLAG_STORAGE} from '../expand/dao/DataStore';
 const pageSize = 10;
 const EVENT_TIME_SPAN_CHANGE = 'EVENT_TIME_SPAN_CHANGE';
+const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending);
 // tab对应的组件
 class TrendingTabView extends Component {
   constructor(props) {
@@ -65,13 +69,14 @@ class TrendingTabView extends Component {
         ++store.pageNo,
         pageSize,
         store.items,
+        favoriteDao,
         msg => {
           this.refs['toast'].show(msg);
         },
       );
     } else {
       // 首次加载
-      onLoadTrendingData(this.languageName, url, pageSize);
+      onLoadTrendingData(this.languageName, url, pageSize, favoriteDao);
     }
   };
   _store = () => {
@@ -81,7 +86,7 @@ class TrendingTabView extends Component {
       store = {
         items: [],
         isLoading: false,
-        projectModes: [],
+        projectModels: [],
         hideLoadingMore: true, // 默认隐藏加载更多
       };
     }
@@ -96,8 +101,23 @@ class TrendingTabView extends Component {
     return (
       <TrendingRepo
         projectModel={repoData}
-        onSelect={() => {
-          NavigationUtil.goPage({projectModel: repoData}, 'Detail');
+        onFavorite={(repoData, isFavorite) =>
+          FavoriteUtil.onFavorite(
+            favoriteDao,
+            repoData.item,
+            isFavorite,
+            FLAG_STORAGE.flag_trending,
+          )
+        }
+        onSelect={callback => {
+          NavigationUtil.goPage(
+            {
+              projectModel: repoData.item,
+              flag: FLAG_STORAGE.flag_trending,
+              callback,
+            },
+            'Detail',
+          );
         }}
       />
     );
@@ -157,16 +177,26 @@ const mapStateToProps = state => ({
   trending: state.trending,
 });
 const mapDispatchToProps = dispatch => ({
-  onLoadTrendingData: (languageName, url, pageSize) => {
-    return dispatch(actions.onLoadTrendingData(languageName, url, pageSize));
+  onLoadTrendingData: (languageName, url, pageSize, favoriteDao) => {
+    return dispatch(
+      actions.onLoadTrendingData(languageName, url, pageSize, favoriteDao),
+    );
   },
-  onLoadMoreTrending: (languageName, pageNo, pageSize, items, callback) => {
+  onLoadMoreTrending: (
+    languageName,
+    pageNo,
+    pageSize,
+    items,
+    favoriteDao,
+    callback,
+  ) => {
     return dispatch(
       actions.onLoadMoreTrending(
         languageName,
         pageNo,
         pageSize,
         items,
+        favoriteDao,
         callback,
       ),
     );
