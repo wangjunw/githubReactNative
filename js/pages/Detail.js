@@ -10,20 +10,22 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {THEME_COLOR, TRENDING_BASE_URL} from '../config/config';
 import ViewUtil from '../utils/ViewUtil';
 import {isIPoneX} from '../utils/DeviceUtil';
+import FavoriteDao from '../expand/dao/FavoriteDao';
 import BackPressComponent from '../components/BackPressComponent';
 export default class DetailPage extends Component {
   constructor(props) {
     super(props);
     this.params = this.props.navigation.state.params;
-    const {projectModel} = this.params;
-
-    this.url =
-      projectModel.html_url || TRENDING_BASE_URL + projectModel.fullName;
-    const title = projectModel.full_name || projectModel.fullName;
+    const {projectModel, flag} = this.params;
+    const {item, isFavorite} = projectModel;
+    this.favoriteDao = new FavoriteDao(flag);
+    this.url = item.html_url || TRENDING_BASE_URL + item.fullName;
+    const title = item.full_name || item.fullName;
     this.state = {
       title,
       url: this.url,
       canGoBack: false, //详情页webview中的返回上一级
+      isFavorite,
     };
     this.backPress = new BackPressComponent({
       backPress: () => this.onBackPress(),
@@ -49,12 +51,31 @@ export default class DetailPage extends Component {
       NavigationUtil.backToPrevPage(this.props.navigation);
     }
   }
+  _onFavoriteClick() {
+    const {projectModel, callback} = this.params;
+    const isFavorite = (projectModel.isFavorite = !projectModel.isFavorite);
+    callback(isFavorite);
+    this.setState({
+      isFavorite,
+    });
+    let key = projectModel.item.fullName
+      ? projectModel.item.fullName
+      : projectModel.item.id.toString();
+    if (projectModel.isFavorite) {
+      this.favoriteDao.saveFavoriteItem(key, JSON.stringify(projectModel));
+    } else {
+      this.favoriteDao.removeFavoriteItem(key);
+    }
+  }
   renderRightButton() {
     return (
       <View style={{flexDirection: 'row'}}>
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity
+          onPress={() => {
+            this._onFavoriteClick();
+          }}>
           <FontAwesome
-            name={'star-o'}
+            name={this.state.isFavorite ? 'star' : 'star-o'}
             size={20}
             style={{color: 'white', marginRight: 10}}
           />

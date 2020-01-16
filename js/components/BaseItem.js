@@ -41,11 +41,13 @@ export default class BaseItem extends Component {
       </TouchableOpacity>
     );
   }
+  // 从详情点击收藏要执行的回调
   onItemClick() {
     this.props.onSelect(isFavorite => {
       this.setFavoriteState(isFavorite);
     });
   }
+  // 点击收藏按钮
   onPressFavorite() {
     this.setFavoriteState(!this.state.isFavorite);
     this.props.onFavorite(this.props.projectModel, !this.state.isFavorite);

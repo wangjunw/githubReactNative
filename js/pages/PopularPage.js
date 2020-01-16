@@ -89,7 +89,7 @@ class PopularTabView extends Component {
         onSelect={callback => {
           NavigationUtil.goPage(
             {
-              projectModel: repoData.item,
+              projectModel: repoData,
               flag: FLAG_STORAGE.flag_popular,
               callback,
             },
