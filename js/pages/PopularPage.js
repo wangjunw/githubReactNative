@@ -91,7 +91,7 @@ class PopularTabView extends Component {
             {
               projectModel: repoData,
               flag: FLAG_STORAGE.flag_popular,
-              callback,
+              callback, //页面之间同步收藏状态
             },
             'Detail',
           );

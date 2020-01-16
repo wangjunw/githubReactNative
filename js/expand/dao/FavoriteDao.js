@@ -95,6 +95,7 @@ export default class FavoriteDao {
                     items.push(JSON.parse(value));
                   }
                 });
+                resolve(items);
               } catch (e) {
                 reject(e);
               }
