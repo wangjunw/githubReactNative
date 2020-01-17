@@ -10,7 +10,8 @@ import FavoritePage from '../pages/Favorite';
 import Ionicons from 'react-native-vector-icons/AntDesign';
 import {createAppContainer} from 'react-navigation';
 import {connect} from 'react-redux';
-
+import EventBus from 'react-native-event-bus';
+import eventTypes from '../utils/EventTypes';
 const TABS = {
   popular: {
     screen: PopularPage,
@@ -74,7 +75,17 @@ class DynamicTabNavigator extends Component {
   };
   render() {
     const Tab = this._TabNavigator();
-    return <Tab />;
+    return (
+      <Tab
+        onNavigationStateChange={(prevState, newState, action) => {
+          // 底部tab切换触发，页面间传递参数
+          EventBus.getInstance().fireEvent(eventTypes.bottom_tab_select, {
+            from: prevState.index, //index: tab的索引位置
+            to: newState.index,
+          });
+        }}
+      />
+    );
   }
 }
 

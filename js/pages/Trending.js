@@ -29,6 +29,8 @@ import {THEME_COLOR} from '../config/config';
 import NavigationUtil from '../utils/NavigationUtil';
 import FavoriteDao from '../expand/dao/FavoriteDao';
 import {FLAG_STORAGE} from '../expand/dao/DataStore';
+import EventBus from 'react-native-event-bus';
+import eventTyps from '../utils/EventTypes';
 const pageSize = 10;
 const EVENT_TIME_SPAN_CHANGE = 'EVENT_TIME_SPAN_CHANGE';
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending);
@@ -40,6 +42,7 @@ class TrendingTabView extends Component {
     this.languageName = tabLabel;
     this.canLoadMore = false; //控制避免多次触发上拉加载
     this.timeSpan = timeSpan;
+    this.isFavoriteChanged = false;
   }
   componentDidMount() {
     // 组件挂载完成，监听事件
@@ -50,20 +53,40 @@ class TrendingTabView extends Component {
         this.loadData();
       },
     );
-    this.loadData();
+    EventBus.getInstance().addListener(
+      eventTyps.favorite_change_trending,
+      (this.favoriteChangeListener = () => {
+        this.isFavoriteChanged = true;
+      }),
+    );
+    EventBus.getInstance().addListener(
+      eventTyps.bottom_tab_select,
+      (this.bottomTabSelectListener = data => {
+        // 如果切换到最热页面并且收藏状态改变了，刷新
+        if (data.to === 1 && this.isFavoriteChanged) {
+          this.loadData(null, true);
+        }
+      }),
+    );
   }
   componentWillUnmount() {
     // 页面卸载，事件移除
     if (this.timeSpanChangeListener) {
       this.timeSpanChangeListener.remove();
     }
+    EventBus.getInstance().removeListener(this.favoriteChangeListener);
+    EventBus.getInstance().removeListener(this.bottomTabSelectListener);
   }
   loadData = loadMore => {
     const url = this.getFetchUrl(this.languageName);
     const store = this._store();
-    const {onLoadTrendingData, onLoadMoreTrending} = this.props;
+    const {
+      onLoadTrendingData,
+      onLoadMoreTrending,
+      onFlushFavorite,
+    } = this.props;
     // 如果是上拉加载更多
-    if (loadMore) {
+    if ((loadMore, isRefreshFavorite)) {
       onLoadMoreTrending(
         this.languageName,
         ++store.pageNo,
@@ -74,6 +97,15 @@ class TrendingTabView extends Component {
           this.refs['toast'].show(msg);
         },
       );
+    } else if (isRefreshFavorite) {
+      onFlushFavorite(
+        this.languageName,
+        store.pageNo,
+        pageSize,
+        store.items,
+        favoriteDao,
+      );
+      this.isFavoriteChanged = false;
     } else {
       // 首次加载
       onLoadTrendingData(this.languageName, url, pageSize, favoriteDao);
@@ -198,6 +230,17 @@ const mapDispatchToProps = dispatch => ({
         items,
         favoriteDao,
         callback,
+      ),
+    );
+  },
+  onFlushFavorite: (languageName, pageNo, pageSize, items, favoriteDao) => {
+    dispatch(
+      actions.onFlushTrendingFavorite(
+        languageName,
+        pageNo,
+        pageSize,
+        items,
+        favoriteDao,
       ),
     );
   },

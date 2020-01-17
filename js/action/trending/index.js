@@ -76,3 +76,32 @@ export function onLoadMoreTrending(
     }, 500);
   };
 }
+/**
+ * 刷新收藏状态
+ * @param {*} storeName tab name
+ * @param {*} pageIndex 第几页
+ * @param {*} pageSize 每页条数
+ * @param {*} dataArr 原始数据
+ * @param {*} favoriteDao
+ */
+export function onFlushTrendingFavorite(
+  languageName,
+  pageNo,
+  pageSize,
+  dataArr,
+  favoriteDao,
+) {
+  return dispatch => {
+    // 不到最后一页
+    let max =
+      pageSize * pageNo > dataArr.length ? dataArr.length : pageSize * pageNo;
+    _projectModels(dataArr.slice(0, max), favoriteDao, projectModels => {
+      dispatch({
+        type: Types.FLUSH_TRENDING_FAVORITE,
+        languageName,
+        pageNo,
+        projectModels,
+      });
+    });
+  };
+}

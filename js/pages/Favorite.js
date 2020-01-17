@@ -21,6 +21,8 @@ import FavoriteDao from '../expand/dao/FavoriteDao';
 import {THEME_COLOR} from '../config/config';
 import {FLAG_STORAGE} from '../expand/dao/DataStore';
 import NavigationUtil from '../utils/NavigationUtil';
+import EventBus from 'react-native-event-bus';
+import eventTypes from '../utils/EventTypes';
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
 // tab对应的组件
 class FavoriteTabView extends Component {
@@ -32,6 +34,19 @@ class FavoriteTabView extends Component {
   }
   componentDidMount() {
     this.loadData(true);
+    // 监听eventBus，底部tab切换
+    EventBus.getInstance().addListener(
+      eventTypes.bottom_tab_select,
+      (this.listener = data => {
+        // 当切换到收藏页时刷新数据，不展示loading
+        if (data.to === 2) {
+          this.loadData(false);
+        }
+      }),
+    );
+  }
+  componentWillUnmount() {
+    EventBus.getInstance().removeListener(this.listener);
   }
   loadData = isLoading => {
     const {onLoadFavoriteData} = this.props;
@@ -49,7 +64,14 @@ class FavoriteTabView extends Component {
     }
     return store;
   };
-
+  onFavorite(item, isFavorite) {
+    FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, this.storeName);
+    if (this.storeName === FLAG_STORAGE.flag_popular) {
+      EventBus.getInstance().fireEvent(eventTypes.favorite_change_popular);
+    } else {
+      EventBus.getInstance().fireEvent(eventTypes.favorite_change_trending);
+    }
+  }
   renderItem = data => {
     const repoData = data.item;
     const Item =
@@ -60,12 +82,7 @@ class FavoriteTabView extends Component {
       <Item
         projectModel={repoData}
         onFavorite={(repoData, isFavorite) =>
-          FavoriteUtil.onFavorite(
-            favoriteDao,
-            repoData.item,
-            isFavorite,
-            this.storeName,
-          )
+          this.onFavorite(repoData.item, isFavorite)
         }
         onSelect={callback => {
           NavigationUtil.goPage(

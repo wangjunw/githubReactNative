@@ -22,6 +22,8 @@ const QUERY_STR = '&sort=stars';
 import {THEME_COLOR} from '../config/config';
 import {FLAG_STORAGE} from '../expand/dao/DataStore';
 import NavigationUtil from '../utils/NavigationUtil';
+import EventBus from 'react-native-event-bus';
+import eventTyps from '../utils/EventTypes';
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
 const pageSize = 10;
 // tab对应的组件
@@ -31,14 +33,34 @@ class PopularTabView extends Component {
     const {tabLabel} = this.props;
     this.languageName = tabLabel;
     this.canLoadMore = false; //控制避免多次触发上拉加载
+    this.isFavoriteChanged = false;
   }
   componentDidMount() {
     this.loadData();
+    EventBus.getInstance().addListener(
+      eventTyps.favorite_change_popular,
+      (this.favoriteChangeListener = () => {
+        this.isFavoriteChanged = true;
+      }),
+    );
+    EventBus.getInstance().addListener(
+      eventTyps.bottom_tab_select,
+      (this.bottomTabSelectListener = data => {
+        // 如果切换到最热页面并且收藏状态改变了，刷新
+        if (data.to === 0 && this.isFavoriteChanged) {
+          this.loadData(null, true);
+        }
+      }),
+    );
   }
-  loadData = loadMore => {
+  componentWillUnmount() {
+    EventBus.getInstance().removeListener(this.favoriteChangeListener);
+    EventBus.getInstance().removeListener(this.bottomTabSelectListener);
+  }
+  loadData = (loadMore, isRefreshFavorite) => {
     const url = this.getFetchUrl(this.languageName);
     const store = this._store();
-    const {onLoadPopularData, onLoadMorePopular} = this.props;
+    const {onLoadPopularData, onLoadMorePopular, onFlushFavorite} = this.props;
     // 如果是上拉加载更多
     if (loadMore) {
       onLoadMorePopular(
@@ -51,6 +73,15 @@ class PopularTabView extends Component {
           this.refs['toast'].show(msg);
         },
       );
+    } else if (isRefreshFavorite) {
+      onFlushFavorite(
+        this.languageName,
+        store.pageNo,
+        pageSize,
+        store.items,
+        favoriteDao,
+      );
+      this.isFavoriteChanged = false;
     } else {
       // 首次加载
       onLoadPopularData(this.languageName, url, pageSize, favoriteDao);
@@ -175,6 +206,17 @@ const mapDispatchToProps = dispatch => ({
         items,
         favoriteDao,
         callback,
+      ),
+    );
+  },
+  onFlushFavorite: (languageName, pageNo, pageSize, items, favoriteDao) => {
+    dispatch(
+      actions.onFlushPopularFavorite(
+        languageName,
+        pageNo,
+        pageSize,
+        items,
+        favoriteDao,
       ),
     );
   },
