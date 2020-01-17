@@ -77,7 +77,7 @@ class TrendingTabView extends Component {
     EventBus.getInstance().removeListener(this.favoriteChangeListener);
     EventBus.getInstance().removeListener(this.bottomTabSelectListener);
   }
-  loadData = loadMore => {
+  loadData = (loadMore, isRefreshFavorite) => {
     const url = this.getFetchUrl(this.languageName);
     const store = this._store();
     const {
@@ -86,7 +86,7 @@ class TrendingTabView extends Component {
       onFlushFavorite,
     } = this.props;
     // 如果是上拉加载更多
-    if ((loadMore, isRefreshFavorite)) {
+    if (loadMore) {
       onLoadMoreTrending(
         this.languageName,
         ++store.pageNo,
