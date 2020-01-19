@@ -11,7 +11,7 @@ import {
 import WelcomePage from '../pages/WelcomePage';
 import HomePage from '../pages/HomePage';
 import DetailPage from '../pages/Detail';
-
+import WebViewPage from '../pages/WebViewPage';
 export const rootCom = 'Init'; //定义根路由
 
 // 初始化导航器，用于加载欢迎页
@@ -34,6 +34,12 @@ const MainNavigator = createStackNavigator({
   },
   Detail: {
     screen: DetailPage,
+    navigationOptions: {
+      header: null,
+    },
+  },
+  WebView: {
+    screen: WebViewPage,
     navigationOptions: {
       header: null,
     },
