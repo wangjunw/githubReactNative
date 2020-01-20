@@ -1,6 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
-import NavigationBar from '../../components/NavigationBar';
+import {View} from 'react-native';
 import {THEME_COLOR} from '../../config/config';
 import MORE_MENU from '../../config/MORE_MENU';
 import GlobalStyles from '../../../static/styles/GlobalStyles';
@@ -44,6 +43,10 @@ export default class AboutPage extends React.Component {
         RouteName = 'WebView';
         params.title = '教程';
         params.url = 'https://coding.m.imooc.com/classindex.html?cid=89';
+        break;
+      case MORE_MENU.About_Author:
+        RouteName = 'AboutAuthor';
+        break;
     }
     if (RouteName) {
       NavigationUtil.goPage(params, RouteName);
@@ -55,35 +58,8 @@ export default class AboutPage extends React.Component {
         {this.getItem(MORE_MENU.Tutorial)}
         <View style={GlobalStyles.line}></View>
         {this.getItem(MORE_MENU.About_Author)}
-        <View style={GlobalStyles.line}></View>
-        {this.getItem(MORE_MENU.Feedback)}
       </View>
     );
     return this.aboutCommon.render(content, this.state.data.app);
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  about_left: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  item: {
-    backgroundColor: 'white',
-    padding: 10,
-    height: 80,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-  },
-  groupTitle: {
-    marginLeft: 10,
-    marginTop: 10,
-    marginBottom: 5,
-    fontSize: 12,
-    color: 'gray',
-  },
-});

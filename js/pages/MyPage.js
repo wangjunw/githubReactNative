@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  Linking,
 } from 'react-native';
 import NavigationBar from '../components/NavigationBar';
 import {THEME_COLOR} from '../config/config';
@@ -33,10 +34,23 @@ export default class My extends React.Component {
       case MORE_MENU.About:
         RouteName = 'About';
         break;
-      case MORE_MENU.Tutorial:
-        RouteName = 'WebView';
-        params.title = '教程';
-        params.url = 'https://coding.m.imooc.com/classindex.html?cid=89';
+      case MORE_MENU.About_Author:
+        RouteName = 'AboutAuthor';
+        break;
+      case MORE_MENU.Feedback:
+        const url = 'mailto://junweiw811@gmail.com';
+        // 是否可以打开其他应用
+        Linking.canOpenURL(url)
+          .then(support => {
+            if (!support) {
+              console.log('do not open email');
+            } else {
+              Linking.openURL(url);
+            }
+          })
+          .catch(e => {
+            console.error(e);
+          });
         break;
     }
     if (RouteName) {
@@ -82,7 +96,6 @@ export default class My extends React.Component {
             />
           </TouchableOpacity>
           <View style={GlobalStyles.line}></View>
-          {this.getItem(MORE_MENU.Tutorial)}
           <Text style={styles.groupTitle}>趋势管理</Text>
           {/*自定义语言*/}
           {this.getItem(MORE_MENU.Custom_Language)}
@@ -105,9 +118,6 @@ export default class My extends React.Component {
           <Text style={styles.groupTitle}>设置</Text>
           {/*自定义主题*/}
           {this.getItem(MORE_MENU.Custom_Theme)}
-          {/*关于作者*/}
-          <View style={GlobalStyles.line} />
-          {this.getItem(MORE_MENU.About_Author)}
           <View style={GlobalStyles.line} />
           {/*反馈*/}
           {this.getItem(MORE_MENU.Feedback)}
