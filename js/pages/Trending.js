@@ -31,6 +31,8 @@ import FavoriteDao from '../expand/dao/FavoriteDao';
 import {FLAG_STORAGE} from '../expand/dao/DataStore';
 import EventBus from 'react-native-event-bus';
 import eventTyps from '../utils/EventTypes';
+import {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
+import ArrayUtil from '../utils/ArrayUtil';
 const pageSize = 10;
 const EVENT_TIME_SPAN_CHANGE = 'EVENT_TIME_SPAN_CHANGE';
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending);
@@ -251,29 +253,35 @@ const TrendingTabViewWithRedux = connect(
   mapDispatchToProps,
 )(TrendingTabView);
 
-export default class TrendingPage extends Component {
+class TrendingPage extends Component {
   constructor(props) {
     super(props);
-    this.tabNames = ['All', 'C', 'C#', 'PHP'];
+    const {onLoadLanguage} = this.props;
+    onLoadLanguage(FLAG_LANGUAGE.flag_language);
+    this.preKeys = [];
     this.state = {
       timeSpan: TimeSpans[0],
     };
   }
   _getTabs() {
     const tabs = {};
-    this.tabNames.forEach((item, index) => {
-      tabs[`tab${index}`] = {
-        screen: props => (
-          <TrendingTabViewWithRedux
-            {...props}
-            timeSpan={this.state.timeSpan}
-            tabLabel={item}
-          />
-        ), //返回组件可以传递函数
-        navigationOptions: {
-          title: item,
-        },
-      };
+    const {keys} = this.props;
+    this.preKeys = keys;
+    keys.forEach((item, index) => {
+      if (item.checked) {
+        tabs[`tab${index}`] = {
+          screen: props => (
+            <TrendingTabViewWithRedux
+              {...props}
+              timeSpan={this.state.timeSpan}
+              tabLabel={item.name}
+            />
+          ), //返回组件可以传递函数
+          navigationOptions: {
+            title: item.name,
+          },
+        };
+      }
     });
     return tabs;
   }
@@ -317,7 +325,10 @@ export default class TrendingPage extends Component {
   }
   _TopNavigator() {
     // 判断，避免每次选择时间重新创建tab，但是需要使用DeviceEventEmitter配合，否则列表也不刷新
-    if (!this.TopNavigator) {
+    if (
+      !this.TopNavigator ||
+      !ArrayUtil.isEqual(this.preKeys, this.props.keys)
+    ) {
       this.TopNavigator = createAppContainer(
         createMaterialTopTabNavigator(this._getTabs(), {
           lazy: true,
@@ -338,6 +349,7 @@ export default class TrendingPage extends Component {
     return this.TopNavigator;
   }
   render() {
+    const {keys} = this.props;
     let statusBarStyle = {
       backgroundColor: THEME_COLOR,
     };
@@ -348,17 +360,26 @@ export default class TrendingPage extends Component {
         style={{backgroundColor: THEME_COLOR}}
       />
     );
-    const TopNavigator = this._TopNavigator();
+    const TopNavigator = keys.length > 0 ? this._TopNavigator() : null;
     return (
       <View style={{flex: 1, marginTop: isIPoneX() ? 30 : 0}}>
         {navigationBar}
-        <TopNavigator />
+        {TopNavigator && <TopNavigator />}
         {this.renderTrendingDialog()}
       </View>
     );
   }
 }
-
+const mapLangsStateToProps = state => ({
+  keys: state.language.langs,
+});
+const mapLangsDispatchToProps = dispatch => ({
+  onLoadLanguage: flag => dispatch(actions.onLoadLanguage(flag)),
+});
+export default connect(
+  mapLangsStateToProps,
+  mapLangsDispatchToProps,
+)(TrendingPage);
 const styles = StyleSheet.create({
   tabContainer: {
     color: 'red',

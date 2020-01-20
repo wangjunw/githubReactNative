@@ -24,6 +24,7 @@ import {FLAG_STORAGE} from '../expand/dao/DataStore';
 import NavigationUtil from '../utils/NavigationUtil';
 import EventBus from 'react-native-event-bus';
 import eventTyps from '../utils/EventTypes';
+import {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
 const pageSize = 10;
 // tab对应的组件
@@ -227,24 +228,31 @@ const PopularTabViewWithRedux = connect(
   mapDispatchToProps,
 )(PopularTabView);
 
-export default class PopularPage extends Component {
+class PopularPage extends Component {
   constructor(props) {
     super(props);
-    this.tabNames = ['Java', 'iOS', 'React', 'React Native'];
+    const {onLoadLanguage} = this.props;
+    onLoadLanguage(FLAG_LANGUAGE.flag_key);
   }
   _getTabs() {
     const tabs = {};
-    this.tabNames.forEach((item, index) => {
-      tabs[`tab${index}`] = {
-        screen: props => <PopularTabViewWithRedux {...props} tabLabel={item} />, //返回组件可以传递函数
-        navigationOptions: {
-          title: item,
-        },
-      };
+    const {keys} = this.props;
+    keys.forEach((item, index) => {
+      if (item.checked) {
+        tabs[`tab${index}`] = {
+          screen: props => (
+            <PopularTabViewWithRedux {...props} tabLabel={item.name} />
+          ), //返回组件可以传递函数
+          navigationOptions: {
+            title: item.name,
+          },
+        };
+      }
     });
     return tabs;
   }
   render() {
+    const {keys} = this.props;
     let statusBarStyle = {
       backgroundColor: THEME_COLOR,
     };
@@ -255,31 +263,43 @@ export default class PopularPage extends Component {
         style={{backgroundColor: THEME_COLOR}}
       />
     );
-    const TopNavigator = createAppContainer(
-      createMaterialTopTabNavigator(this._getTabs(), {
-        lazy: true,
-        scrollEnabled: true,
-        tabBarOptions: {
-          tabStyle: styles.tabStyle,
-          upperCaseLabel: false, //标签不大写
-          scrollEnabled: true, //选项卡左右可滑动
-          style: {
-            backgroundColor: '#678',
-          },
-          indicatorStyle: styles.indicatorStyle, // 指示器样式(tab下的横线)
-          labelStyle: styles.labelStyle, // 文字的样式
-        },
-      }),
-    );
+    const TopNavigator =
+      keys.length > 0
+        ? createAppContainer(
+            createMaterialTopTabNavigator(this._getTabs(), {
+              lazy: true,
+              scrollEnabled: true,
+              tabBarOptions: {
+                tabStyle: styles.tabStyle,
+                upperCaseLabel: false, //标签不大写
+                scrollEnabled: true, //选项卡左右可滑动
+                style: {
+                  backgroundColor: '#678',
+                },
+                indicatorStyle: styles.indicatorStyle, // 指示器样式(tab下的横线)
+                labelStyle: styles.labelStyle, // 文字的样式
+              },
+            }),
+          )
+        : null;
     return (
       <View style={{flex: 1, marginTop: isIPoneX() ? 30 : 0}}>
         {navigationBar}
-        <TopNavigator />
+        {TopNavigator && <TopNavigator />}
       </View>
     );
   }
 }
-
+const mapLangsStateToProps = state => ({
+  keys: state.language.keys,
+});
+const mapLangsDispatchToProps = dispatch => ({
+  onLoadLanguage: flag => dispatch(actions.onLoadLanguage(flag)),
+});
+export default connect(
+  mapLangsStateToProps,
+  mapLangsDispatchToProps,
+)(PopularPage);
 const styles = StyleSheet.create({
   tabContainer: {
     color: 'red',
