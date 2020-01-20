@@ -12,4 +12,5 @@ export default {
     flex: 1,
     backgroundColor: BACKGROUND_COLOR,
   },
+  backgroundColor: BACKGROUND_COLOR,
 };

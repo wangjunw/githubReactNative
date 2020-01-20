@@ -10,7 +10,7 @@ import {THEME_COLOR} from '../config/config';
 import ViewUtil from '../utils/ViewUtil';
 import {isIPoneX} from '../utils/DeviceUtil';
 import BackPressComponent from '../components/BackPressComponent';
-import GlobalStyles from '../config/GlobalStyles';
+import GlobalStyles from '../../static/styles/GlobalStyles';
 export default class WebViewPage extends React.Component {
   constructor(props) {
     super(props);

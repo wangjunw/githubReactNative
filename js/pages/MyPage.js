@@ -10,7 +10,7 @@ import NavigationBar from '../components/NavigationBar';
 import {THEME_COLOR} from '../config/config';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MORE_MENU from '../config/MORE_MENU';
-import GlobalStyles from '../config/GlobalStyles';
+import GlobalStyles from '../../static/styles/GlobalStyles';
 import ViewUtil from '../utils/ViewUtil';
 import NavigationUtil from '../utils/NavigationUtil';
 export default class My extends React.Component {
@@ -30,10 +30,14 @@ export default class My extends React.Component {
     let RouteName,
       params = {};
     switch (menu) {
+      case MORE_MENU.About:
+        RouteName = 'About';
+        break;
       case MORE_MENU.Tutorial:
         RouteName = 'WebView';
         params.title = '教程';
         params.url = 'https://coding.m.imooc.com/classindex.html?cid=89';
+        break;
     }
     if (RouteName) {
       NavigationUtil.goPage(params, RouteName);
