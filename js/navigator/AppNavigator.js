@@ -15,6 +15,7 @@ import WebViewPage from '../pages/WebViewPage';
 import AboutPage from '../pages/about/AboutPage';
 import AboutAuthorPage from '../pages/about/AboutAuthor';
 import CustomKeyPage from '../pages/CustomKeyPage';
+import SortKeyPage from '../pages/SortKeyPage';
 export const rootCom = 'Init'; //定义根路由
 
 // 初始化导航器，用于加载欢迎页
@@ -61,6 +62,12 @@ const MainNavigator = createStackNavigator({
   },
   CustomKey: {
     screen: CustomKeyPage,
+    navigationOptions: {
+      header: null,
+    },
+  },
+  SortKey: {
+    screen: SortKeyPage,
     navigationOptions: {
       header: null,
     },

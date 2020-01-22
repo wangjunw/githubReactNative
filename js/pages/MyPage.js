@@ -63,6 +63,14 @@ export default class My extends React.Component {
             ? FLAG_LANGUAGE.flag_key
             : FLAG_LANGUAGE.flag_language;
         break;
+      case MORE_MENU.Sort_Key:
+        RouteName = 'SortKey';
+        params.flag = FLAG_LANGUAGE.flag_key;
+        break;
+      case MORE_MENU.Sort_Language:
+        RouteName = 'SortKey';
+        params.flag = FLAG_LANGUAGE.flag_language;
+        break;
     }
     if (RouteName) {
       NavigationUtil.goPage(params, RouteName);
