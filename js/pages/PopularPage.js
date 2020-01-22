@@ -279,6 +279,7 @@ class PopularPage extends Component {
                 indicatorStyle: styles.indicatorStyle, // 指示器样式(tab下的横线)
                 labelStyle: styles.labelStyle, // 文字的样式
               },
+              lazy: true, //懒加载，避免每次都渲染每个tab下的view
             }),
           )
         : null;

@@ -343,6 +343,7 @@ class TrendingPage extends Component {
             indicatorStyle: styles.indicatorStyle, // 指示器样式(tab下的横线)
             labelStyle: styles.labelStyle, // 文字的样式
           },
+          lazy: true,
         }),
       );
     }
@@ -371,7 +372,7 @@ class TrendingPage extends Component {
   }
 }
 const mapLangsStateToProps = state => ({
-  keys: state.language.langs,
+  keys: state.language.languages,
 });
 const mapLangsDispatchToProps = dispatch => ({
   onLoadLanguage: flag => dispatch(actions.onLoadLanguage(flag)),

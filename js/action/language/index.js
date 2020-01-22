@@ -6,10 +6,10 @@ import Types from '../../action/types';
 export function onLoadLanguage(flagKey) {
   return async dispatch => {
     try {
-      const langs = await new LanguageDao(flagKey).fetch();
+      const languages = await new LanguageDao(flagKey).fetch();
       dispatch({
         type: Types.LOAD_LANGUAGE_SUCCESS,
-        langs,
+        languages,
         flag: flagKey,
       });
     } catch (e) {

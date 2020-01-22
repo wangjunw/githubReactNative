@@ -16,4 +16,34 @@ export default class ArrayUtil {
     }
     return true;
   }
+  /**
+   * 更新数组，元素已经存在就删除，不存在就添加
+   */
+  static updateArray(array, item) {
+    for (let i = 0, len = array.length; i < len; i++) {
+      let temp = array[i];
+      if (item === temp) {
+        array.splice(i, 1);
+        return;
+      }
+    }
+    array.push(item);
+  }
+  /**
+   * 移除数组中指定元素
+   * item:要移除的item
+   * id:要对比的属性
+   */
+  static remove(array, item, id) {
+    if (!array) {
+      return;
+    }
+    for (let i = 0, l = array.length; i < l; i++) {
+      const val = array[i];
+      if (item === val || (val && val[id] && val[id] === item[id])) {
+        array.splice(i, 1);
+      }
+    }
+    return array;
+  }
 }

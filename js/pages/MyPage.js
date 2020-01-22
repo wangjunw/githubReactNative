@@ -14,6 +14,7 @@ import MORE_MENU from '../config/MORE_MENU';
 import GlobalStyles from '../../static/styles/GlobalStyles';
 import ViewUtil from '../utils/ViewUtil';
 import NavigationUtil from '../utils/NavigationUtil';
+import {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
 export default class My extends React.Component {
   toCustomLabel = () => {
     this.props.navigation.navigate('customLabel');
@@ -51,6 +52,16 @@ export default class My extends React.Component {
           .catch(e => {
             console.error(e);
           });
+        break;
+      case MORE_MENU.Custom_Language:
+      case MORE_MENU.Custom_Key:
+      case MORE_MENU.Remove_Key:
+        RouteName = 'CustomKey';
+        params.isRemoveKey = menu === MORE_MENU.Remove_Key;
+        params.flag =
+          menu !== MORE_MENU.Custom_Language
+            ? FLAG_LANGUAGE.flag_key
+            : FLAG_LANGUAGE.flag_language;
         break;
     }
     if (RouteName) {
