@@ -25,7 +25,6 @@ import TrendingRepo from '../components/TrendingRepo';
 import FavoriteUtil from '../utils/FavoriteUtil';
 import actions from '../action/index';
 const URL = 'https://github.com/trending/';
-import {THEME_COLOR} from '../config/config';
 import NavigationUtil from '../utils/NavigationUtil';
 import FavoriteDao from '../expand/dao/FavoriteDao';
 import {FLAG_STORAGE} from '../expand/dao/DataStore';
@@ -167,6 +166,7 @@ class TrendingTabView extends Component {
   }
   render() {
     let store = this._store();
+    const {theme} = this.props;
     return (
       <View>
         <FlatList
@@ -177,13 +177,13 @@ class TrendingTabView extends Component {
           refreshControl={
             <RefreshControl
               title={'Loading...'}
-              titleColor={THEME_COLOR}
-              colors={[THEME_COLOR]}
+              titleColor={theme.themeColor}
+              colors={[theme.themeColor]}
               refreshing={store.isLoading}
               onRefresh={() => {
                 this.loadData();
               }}
-              tintColor={THEME_COLOR}
+              tintColor={theme.themeColor}
             />
           }
           ListFooterComponent={() => this.getListFooter()}
@@ -265,7 +265,7 @@ class TrendingPage extends Component {
   }
   _getTabs() {
     const tabs = {};
-    const {keys} = this.props;
+    const {keys, theme} = this.props;
     this.preKeys = keys;
     keys.forEach((item, index) => {
       if (item.checked) {
@@ -275,6 +275,7 @@ class TrendingPage extends Component {
               {...props}
               timeSpan={this.state.timeSpan}
               tabLabel={item.name}
+              theme={theme}
             />
           ), //返回组件可以传递函数
           navigationOptions: {
@@ -325,7 +326,9 @@ class TrendingPage extends Component {
   }
   _TopNavigator() {
     // 判断，避免每次选择时间重新创建tab，但是需要使用DeviceEventEmitter配合，否则列表也不刷新
+    const {theme} = this.props;
     if (
+      theme !== this.theme ||
       !this.TopNavigator ||
       !ArrayUtil.isEqual(this.preKeys, this.props.keys)
     ) {
@@ -338,7 +341,7 @@ class TrendingPage extends Component {
             upperCaseLabel: false, //标签不大写
             scrollEnabled: true, //选项卡左右可滑动
             style: {
-              backgroundColor: '#678',
+              backgroundColor: theme.themeColor,
             },
             indicatorStyle: styles.indicatorStyle, // 指示器样式(tab下的横线)
             labelStyle: styles.labelStyle, // 文字的样式
@@ -350,15 +353,15 @@ class TrendingPage extends Component {
     return this.TopNavigator;
   }
   render() {
-    const {keys} = this.props;
+    const {keys, theme} = this.props;
     let statusBarStyle = {
-      backgroundColor: THEME_COLOR,
+      backgroundColor: theme.themeColor,
     };
     let navigationBar = (
       <NavigationBar
         titleView={this.renderTitleView()}
         statusBar={statusBarStyle}
-        style={{backgroundColor: THEME_COLOR}}
+        style={theme.styles.navBar}
       />
     );
     const TopNavigator = keys.length > 0 ? this._TopNavigator() : null;
@@ -373,6 +376,7 @@ class TrendingPage extends Component {
 }
 const mapLangsStateToProps = state => ({
   keys: state.language.languages,
+  theme: state.theme.theme,
 });
 const mapLangsDispatchToProps = dispatch => ({
   onLoadLanguage: flag => dispatch(actions.onLoadLanguage(flag)),

@@ -73,6 +73,7 @@ class FavoriteTabView extends Component {
     }
   }
   renderItem = data => {
+    const {theme} = this.props;
     const repoData = data.item;
     const Item =
       this.storeName === FLAG_STORAGE.flag_popular
@@ -81,12 +82,14 @@ class FavoriteTabView extends Component {
     return (
       <Item
         projectModel={repoData}
+        theme={theme}
         onFavorite={(repoData, isFavorite) =>
           this.onFavorite(repoData.item, isFavorite)
         }
         onSelect={callback => {
           NavigationUtil.goPage(
             {
+              theme,
               projectModel: repoData,
               flag: this.storeName,
               callback, //页面之间同步收藏状态
@@ -99,6 +102,7 @@ class FavoriteTabView extends Component {
   };
   render() {
     let store = this._store();
+    const {theme} = this.props;
     return (
       <View>
         <FlatList
@@ -109,13 +113,13 @@ class FavoriteTabView extends Component {
           refreshControl={
             <RefreshControl
               title={'Loading...'}
-              titleColor={THEME_COLOR}
-              colors={[THEME_COLOR]}
+              titleColor={theme.themeColor}
+              colors={[theme.themeColor]}
               refreshing={store.isLoading}
               onRefresh={() => {
                 this.loadData(true);
               }}
-              tintColor={THEME_COLOR}
+              tintColor={theme.themeColor}
             />
           }
         />
@@ -140,20 +144,21 @@ const FavoriteTabViewWithRedux = connect(
   mapDispatchToProps,
 )(FavoriteTabView);
 
-export default class FavoritePage extends Component {
+class FavoritePage extends Component {
   constructor(props) {
     super(props);
     this.tabNames = ['最热', '趋势'];
   }
   render() {
+    const {theme} = this.props;
     let statusBarStyle = {
-      backgroundColor: THEME_COLOR,
+      backgroundColor: theme.themeColor,
     };
     let navigationBar = (
       <NavigationBar
-        title={'最热'}
+        title={'收藏'}
         statusBar={statusBarStyle}
-        style={{backgroundColor: THEME_COLOR}}
+        style={theme.styles.navBar}
       />
     );
     const TopNavigator = createAppContainer(
@@ -163,6 +168,7 @@ export default class FavoritePage extends Component {
             screen: props => (
               <FavoriteTabViewWithRedux
                 {...props}
+                theme={theme}
                 flag={FLAG_STORAGE.flag_popular}
               />
             ),
@@ -174,6 +180,7 @@ export default class FavoritePage extends Component {
             screen: props => (
               <FavoriteTabViewWithRedux
                 {...props}
+                theme={theme}
                 flag={FLAG_STORAGE.flag_trending}
               />
             ),
@@ -189,7 +196,7 @@ export default class FavoritePage extends Component {
             tabStyle: styles.tabStyle,
             upperCaseLabel: false, //标签不大写
             style: {
-              backgroundColor: '#678',
+              backgroundColor: theme.themeColor,
             },
             indicatorStyle: styles.indicatorStyle, // 指示器样式(tab下的横线)
             labelStyle: styles.labelStyle, // 文字的样式
@@ -205,6 +212,10 @@ export default class FavoritePage extends Component {
     );
   }
 }
+const mapFavoriteStateToProps = state => ({
+  theme: state.theme.theme,
+});
+export default connect(mapFavoriteStateToProps)(FavoritePage);
 
 const styles = StyleSheet.create({
   tabContainer: {

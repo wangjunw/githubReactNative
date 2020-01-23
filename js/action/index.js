@@ -1,7 +1,7 @@
 /**
  * 根action，导出所有方法
  */
-import {onThemeChange} from './theme';
+import {onThemeChange, onShowCustomThemeView, onThemeInit} from './theme';
 import {
   onLoadPopularData,
   onLoadMorePopular,
@@ -16,6 +16,8 @@ import {onLoadFavoriteData} from './favorite';
 import {onLoadLanguage} from './language';
 export default {
   onThemeChange,
+  onShowCustomThemeView,
+  onThemeInit,
   onLoadPopularData,
   onFlushPopularFavorite,
   onLoadMorePopular,

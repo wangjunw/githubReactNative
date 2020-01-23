@@ -68,7 +68,7 @@ class DynamicTabNavigator extends Component {
       createBottomTabNavigator(tabs, {
         initialRouteName: 'popular',
         tabBarComponent: props => (
-          <TabBarComponent {...props} theme={this.props.theme} />
+          <TabBarComponent {...props} theme={this.props.theme.themeColor} />
         ),
       }),
     ));

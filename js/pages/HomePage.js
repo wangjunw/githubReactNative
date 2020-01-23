@@ -4,10 +4,12 @@
 import React, {Component} from 'react';
 import NavigationUtil from '../utils/NavigationUtil';
 import DynamicBottomTabNavigator from '../navigator/DynamicBottomTabNavigator';
-import {BackHandler} from 'react-native';
 import {NavigationActions} from 'react-navigation';
 import {connect} from 'react-redux';
 import BackPressComponent from '../components/BackPressComponent';
+import CustomTheme from '../pages/CustomTheme';
+import {View} from 'react-native';
+import actions from '../action';
 class HomePage extends Component {
   constructor(props) {
     super(props);
@@ -36,14 +38,35 @@ class HomePage extends Component {
     dispatch(NavigationActions.back());
     return true;
   };
+  renderCustomThemeView() {
+    const {customThemeViewVisible, onShowCustomThemeView} = this.props;
+    return (
+      <CustomTheme
+        visible={customThemeViewVisible}
+        {...this.props}
+        onClose={() => {
+          onShowCustomThemeView(false);
+        }}
+      />
+    );
+  }
   render() {
     // 保存外层的navigation(即与HomePage同级设置的路由)，用于在子页面中跳转到外层页面
     NavigationUtil.navigation = this.props.navigation;
-    return <DynamicBottomTabNavigator />;
+    return (
+      <View style={{flex: 1}}>
+        <DynamicBottomTabNavigator />
+        {this.renderCustomThemeView()}
+      </View>
+    );
   }
 }
 
 const mapStateToProps = state => ({
   nav: state.nav,
+  customThemeViewVisible: state.theme.customThemeViewVisible,
 });
-export default connect(mapStateToProps)(HomePage);
+const mapDispatchToProps = dispatch => ({
+  onShowCustomThemeView: show => dispatch(actions.onShowCustomThemeView(show)),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage);

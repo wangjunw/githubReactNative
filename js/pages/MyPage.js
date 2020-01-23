@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {
   StyleSheet,
   View,
@@ -8,24 +8,29 @@ import {
   Linking,
 } from 'react-native';
 import NavigationBar from '../components/NavigationBar';
-import {THEME_COLOR} from '../config/config';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MORE_MENU from '../config/MORE_MENU';
 import GlobalStyles from '../../static/styles/GlobalStyles';
 import ViewUtil from '../utils/ViewUtil';
 import NavigationUtil from '../utils/NavigationUtil';
 import {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
-export default class My extends React.Component {
+import {connect} from 'react-redux';
+import actions from '../action';
+class My extends Component {
+  constructor(props) {
+    super(props);
+  }
   toCustomLabel = () => {
     this.props.navigation.navigate('customLabel');
   };
   getItem(menu) {
+    const {theme} = this.props;
     return ViewUtil.getMenuItem(
       () => {
         this.onClick(menu);
       },
       menu,
-      THEME_COLOR,
+      theme.themeColor,
     );
   }
   onClick(menu) {
@@ -71,20 +76,25 @@ export default class My extends React.Component {
         RouteName = 'SortKey';
         params.flag = FLAG_LANGUAGE.flag_language;
         break;
+      case MORE_MENU.Custom_Theme:
+        const {onShowCustomThemeView} = this.props;
+        onShowCustomThemeView(true);
+        break;
     }
     if (RouteName) {
       NavigationUtil.goPage(params, RouteName);
     }
   }
   render() {
+    const {theme} = this.props;
     let statusBarStyle = {
-      backgroundColor: THEME_COLOR,
+      backgroundColor: theme.themeColor,
     };
     let navigationBar = (
       <NavigationBar
         title={'我的'}
         statusBar={statusBarStyle}
-        style={{backgroundColor: THEME_COLOR}}
+        style={theme.styles.navBar}
       />
     );
     return (
@@ -100,7 +110,7 @@ export default class My extends React.Component {
               <Ionicons
                 name={MORE_MENU.About.icon}
                 size={40}
-                style={{marginRight: 10, color: THEME_COLOR}}
+                style={{marginRight: 10, color: theme.themeColor}}
               />
               <Text>Github Popular</Text>
             </View>
@@ -110,7 +120,7 @@ export default class My extends React.Component {
               style={{
                 marginRight: 10,
                 alignSelf: 'center',
-                color: THEME_COLOR,
+                color: theme.themeColor,
               }}
             />
           </TouchableOpacity>
@@ -147,7 +157,16 @@ export default class My extends React.Component {
     );
   }
 }
-
+const mapStateToProps = state => ({
+  theme: state.theme.theme,
+});
+const mapDispatchToProps = dispatch => ({
+  onShowCustomThemeView: show => {
+    console.log(3333, show);
+    return dispatch(actions.onShowCustomThemeView(show));
+  },
+});
+export default connect(mapStateToProps, mapDispatchToProps)(My);
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -19,7 +19,6 @@ import actions from '../action/index';
 import FavoriteDao from '../expand/dao/FavoriteDao';
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
-import {THEME_COLOR} from '../config/config';
 import {FLAG_STORAGE} from '../expand/dao/DataStore';
 import NavigationUtil from '../utils/NavigationUtil';
 import EventBus from 'react-native-event-bus';
@@ -107,9 +106,11 @@ class PopularTabView extends Component {
 
   renderItem = data => {
     const repoData = data.item;
+    const {theme} = this.props;
     return (
       <RepoItem
         projectModel={repoData}
+        theme={theme}
         onFavorite={(repoData, isFavorite) =>
           FavoriteUtil.onFavorite(
             favoriteDao,
@@ -142,6 +143,7 @@ class PopularTabView extends Component {
   }
   render() {
     let store = this._store();
+    const {theme} = this.props;
     return (
       <View>
         <FlatList
@@ -152,13 +154,13 @@ class PopularTabView extends Component {
           refreshControl={
             <RefreshControl
               title={'Loading...'}
-              titleColor={THEME_COLOR}
-              colors={[THEME_COLOR]}
+              titleColor={theme.themeColor}
+              colors={[theme.themeColor]}
               refreshing={store.isLoading}
               onRefresh={() => {
                 this.loadData();
               }}
-              tintColor={THEME_COLOR}
+              tintColor={theme.themeColor}
             />
           }
           ListFooterComponent={() => this.getListFooter()}
@@ -236,12 +238,16 @@ class PopularPage extends Component {
   }
   _getTabs() {
     const tabs = {};
-    const {keys} = this.props;
+    const {keys, theme} = this.props;
     keys.forEach((item, index) => {
       if (item.checked) {
         tabs[`tab${index}`] = {
           screen: props => (
-            <PopularTabViewWithRedux {...props} tabLabel={item.name} />
+            <PopularTabViewWithRedux
+              {...props}
+              tabLabel={item.name}
+              theme={theme}
+            />
           ), //返回组件可以传递函数
           navigationOptions: {
             title: item.name,
@@ -252,15 +258,15 @@ class PopularPage extends Component {
     return tabs;
   }
   render() {
-    const {keys} = this.props;
+    const {keys, theme} = this.props;
     let statusBarStyle = {
-      backgroundColor: THEME_COLOR,
+      backgroundColor: theme.themeColor,
     };
     let navigationBar = (
       <NavigationBar
         title={'最热'}
         statusBar={statusBarStyle}
-        style={{backgroundColor: THEME_COLOR}}
+        style={theme.styles.navBar}
       />
     );
     const TopNavigator =
@@ -274,7 +280,7 @@ class PopularPage extends Component {
                 upperCaseLabel: false, //标签不大写
                 scrollEnabled: true, //选项卡左右可滑动
                 style: {
-                  backgroundColor: '#678',
+                  backgroundColor: theme.themeColor,
                 },
                 indicatorStyle: styles.indicatorStyle, // 指示器样式(tab下的横线)
                 labelStyle: styles.labelStyle, // 文字的样式
@@ -293,6 +299,7 @@ class PopularPage extends Component {
 }
 const mapLangsStateToProps = state => ({
   keys: state.language.keys,
+  theme: state.theme.theme,
 });
 const mapLangsDispatchToProps = dispatch => ({
   onLoadLanguage: flag => dispatch(actions.onLoadLanguage(flag)),
