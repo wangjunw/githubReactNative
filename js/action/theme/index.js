@@ -23,6 +23,5 @@ export function onThemeInit() {
  * 唤起主体选择界面
  */
 export function onShowCustomThemeView(show) {
-  console.log(show);
   return {type: Types.SHOW_THEME_VIEW, customThemeViewVisible: show};
 }

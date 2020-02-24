@@ -162,7 +162,6 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = dispatch => ({
   onShowCustomThemeView: show => {
-    console.log(3333, show);
     return dispatch(actions.onShowCustomThemeView(show));
   },
 });
