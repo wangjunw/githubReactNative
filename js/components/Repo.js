@@ -3,7 +3,6 @@
  */
 import React from 'react';
 import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
-import NavigationUtil from '../utils/NavigationUtil';
 import BaseItem from '../components/BaseItem';
 export default class Repo extends BaseItem {
   constructor(props) {

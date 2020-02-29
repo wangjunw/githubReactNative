@@ -5,7 +5,7 @@ import trending from './trending';
 import favorite from './favorite';
 import language from './language';
 import {RootNavigator, rootCom} from '../navigator/AppNavigator';
-
+import search from './search';
 /**
  * 创建默认state
  * getStateForAction：定义navigation state以响应给定的操作。 比如当一个动作被传递到props.navigation.dispatch时
@@ -30,6 +30,7 @@ const indexReducer = combineReducers({
   trending,
   favorite,
   language,
+  search,
 });
 
 export default indexReducer;

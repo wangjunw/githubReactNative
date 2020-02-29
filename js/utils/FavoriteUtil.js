@@ -19,6 +19,8 @@ export default class Utils {
 
   // 收藏按钮单击回调函数
   static onFavorite(favoriteDao, item, isFavorite, flag) {
+    console.log('item, isFavorite: ', item, isFavorite);
+
     const key =
       flag === FLAG_STORAGE.flag_trending ? item.fullName : item.id.toString();
     if (isFavorite) {
@@ -26,5 +28,15 @@ export default class Utils {
     } else {
       favoriteDao.removeFavoriteItem(key);
     }
+  }
+
+  // 判断当前搜索关键字是否存在于最热的标签中
+  static checkKeyIsExist(keys, inputKey) {
+    for (let i = 0, len = keys.length; i < len; i++) {
+      if (inputKey.toLowerCase() === keys[i].name.toLowerCase()) {
+        return true;
+      }
+    }
+    return false;
   }
 }

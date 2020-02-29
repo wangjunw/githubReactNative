@@ -1,5 +1,6 @@
 import ProjectModel from '../model/ProjectModel';
 import Utils from '../utils/FavoriteUtil';
+import {object} from 'prop-types';
 /**
  * action相关的公共方法
  * @param {*} actionType
@@ -8,6 +9,7 @@ import Utils from '../utils/FavoriteUtil';
  * @param {*} data
  * @param {*} pageSize
  * @param {*} favoriteDao
+ * @param {*} params 扩展参数
  */
 export const handleData = (
   actionType,
@@ -16,6 +18,7 @@ export const handleData = (
   data,
   pageSize,
   favoriteDao,
+  params,
 ) => {
   let fixItems = [];
   if (data && data.data) {
@@ -39,6 +42,7 @@ export const handleData = (
       projectModels,
       languageName,
       pageNo: 1,
+      ...params,
     });
   });
 };
@@ -51,12 +55,18 @@ export async function _projectModels(showItems, favoriteDao, callback) {
     console.log(e);
   }
   let projectModels = [];
+
   for (let i = 0, len = showItems.length; i < len; i++) {
     projectModels.push(
       new ProjectModel(showItems[i], Utils.checkFavorite(showItems[i], keys)),
     );
   }
-  if (typeof callback === 'function') {
-    callback(projectModels);
-  }
+  doCallback(callback, projectModels);
 }
+
+// 对调用callback做封装
+export const doCallback = (callback, obj) => {
+  if (typeof callback === 'function') {
+    callback(obj);
+  }
+};
