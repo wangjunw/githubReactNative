@@ -26,6 +26,10 @@ import NavigationUtil from '../utils/NavigationUtil';
 import EventBus from 'react-native-event-bus';
 import eventTyps from '../utils/EventTypes';
 import {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
+
+// 友盟
+import AnalysisUtil from '../utils/AnalysisUtil';
+
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
 const pageSize = 10;
 // tab对应的组件
@@ -264,6 +268,7 @@ class PopularPage extends Component {
     return (
       <TouchableOpacity
         onPress={() => {
+          AnalysisUtil.onEvent('searchButtonClick');
           NavigationUtil.goPage({theme}, 'Search');
         }}>
         <View style={{padding: 5, marginRight: 8}}>

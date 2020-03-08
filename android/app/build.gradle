@@ -187,7 +187,10 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0-alpha02'
-
+    implementation project(path: ':trackshare')
+    // 添加友盟基础组件库和统计SDK库依赖 教程给的compile需要改成implementation
+    api  'com.umeng.umsdk:analytics:8.0.0'
+    api  'com.umeng.umsdk:common:2.0.0'
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";
         debugImplementation files(hermesPath + "hermes-debug.aar")
