@@ -179,6 +179,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-splash-screen')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-gesture-handler')
     implementation project(':react-native-reanimated')
@@ -190,6 +191,8 @@ dependencies {
     // 添加友盟基础组件库和统计SDK库依赖 教程给的compile需要改成implementation
     implementation  'com.umeng.umsdk:analytics:8.0.0'
     implementation  'com.umeng.umsdk:common:2.0.0'
+    // 启动屏
+    implementation project(':react-native-splash-screen')
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";
         debugImplementation files(hermesPath + "hermes-debug.aar")

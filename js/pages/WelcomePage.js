@@ -4,9 +4,11 @@
 import React, {Component} from 'react';
 import {Text, StyleSheet, View} from 'react-native';
 import NavigationUtil from '../utils/NavigationUtil';
+import SplashScreen from 'react-native-splash-screen';
 export default class WelcomePage extends Component {
   componentDidMount() {
     this.timer = setTimeout(() => {
+      SplashScreen.hide();
       NavigationUtil.resetToHomePage({
         navigation: this.props.navigation,
       });
