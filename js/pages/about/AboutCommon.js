@@ -6,8 +6,8 @@ import BackPressComponent from '../../components/BackPressComponent';
 import NavigationUtil from '../../utils/NavigationUtil';
 import configJson from '../../../static/data/config.json';
 import ParallaxScrollView from 'react-native-parallax-scroll-view'; //背景和布局随滑动变化的头部组件
-import {THEME_COLOR} from '../../config/config';
 import GlobalStyles from '../../../static/styles/GlobalStyles';
+
 import {
   Platform,
   View,
@@ -23,6 +23,7 @@ const WINDOW = Dimensions.get('window');
 const AVATAR_SIZE = 90;
 const PARALLAX_HEADER_HEIGHT = 270;
 const TOP = Platform.OS === 'ios' ? 20 + (isIPoneX() ? 24 : 0) : 0;
+
 const STICKY_HEADER_HEIGHT =
   Platform.OS === 'ios' ? ios.NAV_BAR_HEIGHT + TOP : android.NAV_BAR_HEIGHT;
 
@@ -102,9 +103,10 @@ export default class AboutCommon {
   onShare() {}
   render(contentView, params) {
     const renderConfig = this.getParallaxRenderConfig(params);
+    const {theme} = this.props;
     return (
       <ParallaxScrollView
-        backgroundColor={THEME_COLOR}
+        backgroundColor={theme.themeColor}
         contentBackgroundColor={GlobalStyles.backgroundColor}
         parallaxHeaderHeight={PARALLAX_HEADER_HEIGHT} //静默时高度
         stickyHeaderHeight={STICKY_HEADER_HEIGHT} //顶部悬浮时的高度

@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {View, Text, StyleSheet, ScrollView, Alert} from 'react-native';
+import {View, StyleSheet, ScrollView, Alert} from 'react-native';
 import CheckBox from 'react-native-check-box';
 import {isIPoneX} from '../utils/DeviceUtil';
 import NavigationBar from '../components/NavigationBar';
 import actions from '../action/index';
 import BackPressComponent from '../components/BackPressComponent';
-import {THEME_COLOR} from '../config/config';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import NavigationUtil from '../utils/NavigationUtil';
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
@@ -18,7 +17,7 @@ class CustomKeyPage extends Component {
     super(props);
     this.params = this.props.navigation.state.params;
     this.backPress = new BackPressComponent({
-      backPress: e => this.onBackPress(e),
+      backPress: (e) => this.onBackPress(e),
     });
     this.changeValues = [];
     this.isRemoveKey = !!this.params.isRemoveKey; //是否显示标签移除
@@ -82,7 +81,7 @@ class CustomKeyPage extends Component {
       if (state && state.keys && state.keys.length !== 0) {
         return state.keys;
       } else {
-        return props.languages[key].map(val => {
+        return props.languages[key].map((val) => {
           return {
             //注意：不直接修改props，copy一份
             ...val,
@@ -138,13 +137,13 @@ class CustomKeyPage extends Component {
     );
   }
   _checkedImage(checked) {
-    // const {theme} = this.params;
+    const {theme} = this.params;
     return (
       <Ionicons
         name={checked ? 'ios-checkbox' : 'md-square-outline'}
         size={20}
         style={{
-          color: THEME_COLOR,
+          color: theme.themeColor,
         }}
       />
     );
@@ -170,6 +169,7 @@ class CustomKeyPage extends Component {
     return views;
   }
   render() {
+    const {theme} = this.params;
     let title = this.isRemoveKey ? '标签移除' : '自定义标签';
     title =
       this.params.flag === FLAG_LANGUAGE.flag_language ? '自定义语言' : title;
@@ -178,7 +178,7 @@ class CustomKeyPage extends Component {
       <NavigationBar
         title={title}
         leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
-        style={{backgroundColor: THEME_COLOR}}
+        style={theme.styles.navBar}
         rightButton={ViewUtil.getRightButton(rightButtonTitle, () =>
           this.onSave(),
         )}
@@ -192,11 +192,11 @@ class CustomKeyPage extends Component {
     );
   }
 }
-const mapLangsStateToProps = state => ({
+const mapLangsStateToProps = (state) => ({
   languages: state.language,
 });
-const mapLangsDispatchToProps = dispatch => ({
-  onLoadLanguage: flag => dispatch(actions.onLoadLanguage(flag)),
+const mapLangsDispatchToProps = (dispatch) => ({
+  onLoadLanguage: (flag) => dispatch(actions.onLoadLanguage(flag)),
 });
 export default connect(
   mapLangsStateToProps,

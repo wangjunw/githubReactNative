@@ -6,7 +6,6 @@ import {StyleSheet, View} from 'react-native';
 import {WebView} from 'react-native-webview';
 import NavigationBar from '../components/NavigationBar';
 import NavigationUtil from '../utils/NavigationUtil';
-import {THEME_COLOR} from '../config/config';
 import ViewUtil from '../utils/ViewUtil';
 import {isIPoneX} from '../utils/DeviceUtil';
 import BackPressComponent from '../components/BackPressComponent';
@@ -53,25 +52,26 @@ export default class WebViewPage extends React.Component {
     });
   }
   render() {
+    const {theme} = this.params;
     let navigationBar = (
       <NavigationBar
         title={this.state.title}
         leftButton={ViewUtil.getLeftBackButton(() => {
           this.onBackPress();
         })}
-        style={{backgroundColor: THEME_COLOR}}
+        style={theme.styles.navBar}
       />
     );
     return (
       <View style={GlobalStyles.root_container}>
         {navigationBar}
         <WebView
-          ref={webView => {
+          ref={(webView) => {
             this.webView = webView;
           }}
           startInLoadingState={true}
           source={{uri: this.state.url}}
-          onNavigationStateChange={e => {
+          onNavigationStateChange={(e) => {
             this.onNavigationStateChange(e);
           }}
         />

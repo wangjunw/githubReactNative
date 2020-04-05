@@ -49,7 +49,7 @@ class TrendingTabView extends Component {
     // 组件挂载完成，监听事件
     this.timeSpanChangeListener = DeviceEventEmitter.addListener(
       EVENT_TIME_SPAN_CHANGE,
-      timeSpan => {
+      (timeSpan) => {
         this.timeSpan = timeSpan;
         this.loadData();
       },
@@ -62,7 +62,7 @@ class TrendingTabView extends Component {
     );
     EventBus.getInstance().addListener(
       eventTyps.bottom_tab_select,
-      (this.bottomTabSelectListener = data => {
+      (this.bottomTabSelectListener = (data) => {
         // 如果切换到最热页面并且收藏状态改变了，刷新
         if (data.to === 1 && this.isFavoriteChanged) {
           this.loadData(null, true);
@@ -94,7 +94,7 @@ class TrendingTabView extends Component {
         pageSize,
         store.items,
         favoriteDao,
-        msg => {
+        (msg) => {
           this.refs['toast'].show(msg);
         },
       );
@@ -125,11 +125,11 @@ class TrendingTabView extends Component {
     }
     return store;
   };
-  getFetchUrl = languageName => {
+  getFetchUrl = (languageName) => {
     return URL + languageName + '?' + this.timeSpan.searchText;
   };
 
-  renderItem = data => {
+  renderItem = (data) => {
     const repoData = data.item;
     return (
       <TrendingRepo
@@ -142,7 +142,7 @@ class TrendingTabView extends Component {
             FLAG_STORAGE.flag_trending,
           )
         }
-        onSelect={callback => {
+        onSelect={(callback) => {
           NavigationUtil.goPage(
             {
               projectModel: repoData,
@@ -172,8 +172,8 @@ class TrendingTabView extends Component {
         <FlatList
           style={styles.tabContainer}
           data={store.projectModes}
-          renderItem={item => this.renderItem(item)}
-          keyExtractor={item => '' + (item.id || item.fullName)}
+          renderItem={(item) => this.renderItem(item)}
+          keyExtractor={(item) => '' + (item.id || item.fullName)}
           refreshControl={
             <RefreshControl
               title={'Loading...'}
@@ -207,10 +207,10 @@ class TrendingTabView extends Component {
     );
   }
 }
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   trending: state.trending,
 });
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   onLoadTrendingData: (languageName, url, pageSize, favoriteDao) => {
     return dispatch(
       actions.onLoadTrendingData(languageName, url, pageSize, favoriteDao),
@@ -270,7 +270,7 @@ class TrendingPage extends Component {
     keys.forEach((item, index) => {
       if (item.checked) {
         tabs[`tab${index}`] = {
-          screen: props => (
+          screen: (props) => (
             <TrendingTabViewWithRedux
               {...props}
               timeSpan={this.state.timeSpan}
@@ -308,7 +308,7 @@ class TrendingPage extends Component {
       </View>
     );
   }
-  onSelectTimeSpan = timeSpan => {
+  onSelectTimeSpan = (timeSpan) => {
     this.dialog.close();
     this.setState({
       timeSpan,
@@ -319,7 +319,7 @@ class TrendingPage extends Component {
   renderTrendingDialog() {
     return (
       <TrendingDialog
-        ref={dialog => (this.dialog = dialog)}
+        ref={(dialog) => (this.dialog = dialog)}
         onSelect={this.onSelectTimeSpan}
       />
     );
@@ -366,7 +366,7 @@ class TrendingPage extends Component {
     );
     const TopNavigator = keys.length > 0 ? this._TopNavigator() : null;
     return (
-      <View style={{flex: 1, marginTop: isIPoneX() ? 30 : 0}}>
+      <View style={{flex: 1}}>
         {navigationBar}
         {TopNavigator && <TopNavigator />}
         {this.renderTrendingDialog()}
@@ -374,12 +374,12 @@ class TrendingPage extends Component {
     );
   }
 }
-const mapLangsStateToProps = state => ({
+const mapLangsStateToProps = (state) => ({
   keys: state.language.languages,
   theme: state.theme.theme,
 });
-const mapLangsDispatchToProps = dispatch => ({
-  onLoadLanguage: flag => dispatch(actions.onLoadLanguage(flag)),
+const mapLangsDispatchToProps = (dispatch) => ({
+  onLoadLanguage: (flag) => dispatch(actions.onLoadLanguage(flag)),
 });
 export default connect(
   mapLangsStateToProps,

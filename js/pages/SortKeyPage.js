@@ -2,11 +2,9 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {View, Text, StyleSheet, Alert, TouchableHighlight} from 'react-native';
 import SortableListView from 'react-native-sortable-listview';
-import {isIPoneX} from '../utils/DeviceUtil';
 import NavigationBar from '../components/NavigationBar';
 import actions from '../action/index';
 import BackPressComponent from '../components/BackPressComponent';
-import {THEME_COLOR} from '../config/config';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import NavigationUtil from '../utils/NavigationUtil';
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
@@ -18,7 +16,7 @@ class SortKeyPage extends Component {
     super(props);
     this.params = this.props.navigation.state.params;
     this.backPress = new BackPressComponent({
-      backPress: e => this.onBackPress(e),
+      backPress: (e) => this.onBackPress(e),
     });
 
     this.languageDao = new LanguageDao(this.params.flag);
@@ -131,6 +129,7 @@ class SortKeyPage extends Component {
     return sortResultArray;
   }
   render() {
+    const {theme} = this.params;
     let title =
       this.params.flag === FLAG_LANGUAGE.flag_language
         ? '语言排序'
@@ -139,7 +138,7 @@ class SortKeyPage extends Component {
       <NavigationBar
         title={title}
         leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
-        style={{backgroundColor: THEME_COLOR}}
+        style={theme.styles.navBar}
         rightButton={ViewUtil.getRightButton('保存', () => this.onSave())}
       />
     );
@@ -149,7 +148,7 @@ class SortKeyPage extends Component {
         <SortableListView
           data={this.state.checkedArray}
           order={Object.keys(this.state.checkedArray)}
-          onRowMoved={e => {
+          onRowMoved={(e) => {
             this.state.checkedArray.splice(
               e.to,
               0,
@@ -157,17 +156,17 @@ class SortKeyPage extends Component {
             );
             this.forceUpdate();
           }}
-          renderRow={row => <RowComponent data={row} {...this.params} />}
+          renderRow={(row) => <RowComponent data={row} {...this.params} />}
         />
       </View>
     );
   }
 }
-const mapLangsStateToProps = state => ({
+const mapLangsStateToProps = (state) => ({
   languages: state.language,
 });
-const mapLangsDispatchToProps = dispatch => ({
-  onLoadLanguage: flag => dispatch(actions.onLoadLanguage(flag)),
+const mapLangsDispatchToProps = (dispatch) => ({
+  onLoadLanguage: (flag) => dispatch(actions.onLoadLanguage(flag)),
 });
 export default connect(
   mapLangsStateToProps,
@@ -176,6 +175,7 @@ export default connect(
 
 class RowComponent extends Component {
   render() {
+    const {theme} = this.props;
     return (
       <TouchableHighlight
         style={this.props.data.checked ? styles.item : styles.hidden}
@@ -184,7 +184,7 @@ class RowComponent extends Component {
           <MaterialCommunityIcons
             name="sort"
             size={16}
-            style={{marginRight: 10, color: THEME_COLOR}}
+            style={{marginRight: 10, color: theme.themeColor}}
           />
           <Text>{this.props.data.name}</Text>
         </View>

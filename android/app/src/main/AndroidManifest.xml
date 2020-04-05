@@ -70,5 +70,8 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     </application>
-
+    <!--适配全面屏-->
+    <meta-data
+        android:name="android.max_aspect"
+        android:value="2.2" />
 </manifest>

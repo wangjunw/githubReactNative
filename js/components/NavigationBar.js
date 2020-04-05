@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import {ios, android} from '../config/config';
+import {isIPoneX} from '../utils/DeviceUtil';
 
 // 状态栏属性
 const StatusBarShape = {
@@ -79,8 +80,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#2196f3',
   },
   statusBar: {
-    height:
-      Platform.OS === 'ios' ? ios.STATUS_BAR_HEIGHT : android.STATUS_BAR_HEIGHT,
+    height: isIPoneX()
+      ? 0
+      : Platform.OS === 'ios'
+      ? ios.STATUS_BAR_HEIGHT
+      : android.STATUS_BAR_HEIGHT,
   },
   navBar: {
     flexDirection: 'row',

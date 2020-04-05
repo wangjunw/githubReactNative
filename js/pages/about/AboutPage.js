@@ -1,6 +1,5 @@
 import React from 'react';
 import {View} from 'react-native';
-import {THEME_COLOR} from '../../config/config';
 import MORE_MENU from '../../config/MORE_MENU';
 import GlobalStyles from '../../../static/styles/GlobalStyles';
 import ViewUtil from '../../utils/ViewUtil';
@@ -17,7 +16,7 @@ export default class AboutPage extends React.Component {
         navigation: this.props.navigation,
         flagAbout: FLAG_ABOUT.flag_about,
       },
-      data => this.setState({...data}),
+      (data) => (this.state = {...data}),
     );
     this.state = {
       data: config,
@@ -27,17 +26,19 @@ export default class AboutPage extends React.Component {
     this.props.navigation.navigate('customLabel');
   };
   getItem(menu) {
+    const {theme} = this.params;
     return ViewUtil.getMenuItem(
       () => {
         this.onClick(menu);
       },
       menu,
-      THEME_COLOR,
+      theme.themeColor,
     );
   }
   onClick(menu) {
+    const {theme} = this.params;
     let RouteName,
-      params = {};
+      params = {theme};
     switch (menu) {
       case MORE_MENU.Tutorial:
         RouteName = 'WebView';

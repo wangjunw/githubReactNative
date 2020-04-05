@@ -1,6 +1,5 @@
 import React from 'react';
 import {View, Clipboard} from 'react-native';
-import {THEME_COLOR} from '../../config/config';
 import GlobalStyles from '../../../static/styles/GlobalStyles';
 import ViewUtil from '../../utils/ViewUtil';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -18,7 +17,7 @@ export default class AboutPage extends React.Component {
         navigation: this.props.navigation,
         flagAbout: FLAG_ABOUT.flag_about_me,
       },
-      data => this.setState({...data}),
+      (data) => this.setState({...data}),
     );
     this.state = {
       data: config,
@@ -30,21 +29,24 @@ export default class AboutPage extends React.Component {
     this.props.navigation.navigate('customLabel');
   };
   getItem(menu) {
+    const {theme} = this.params;
     return ViewUtil.getMenuItem(
       () => {
         this.onClick(menu);
       },
       menu,
-      THEME_COLOR,
+      theme.themeColor,
     );
   }
   onClick(item) {
     if (!item) {
       return;
     }
+    const {theme} = this.params;
     if (item.url) {
       NavigationUtil.goPage(
         {
+          theme,
           title: item.title,
           url: item.url,
         },
@@ -58,6 +60,7 @@ export default class AboutPage extends React.Component {
     }
   }
   _item(menu, isShow, key) {
+    const {theme} = this.params;
     return ViewUtil.getSettingItem(
       () => {
         this.setState({
@@ -65,7 +68,7 @@ export default class AboutPage extends React.Component {
         });
       },
       menu.name,
-      THEME_COLOR,
+      theme.themeColor,
       Ionicons,
       menu.icon,
       isShow ? 'ios-arrow-up' : 'ios-arrow-down',
@@ -77,6 +80,7 @@ export default class AboutPage extends React.Component {
       return false;
     }
     let views = [];
+    const {theme} = this.params;
     for (let i in dic) {
       let title = isShowAccount
         ? dic[i].title + ':' + dic[i].account
@@ -88,7 +92,7 @@ export default class AboutPage extends React.Component {
               this.onClick(dic[i]);
             },
             title,
-            THEME_COLOR,
+            theme.themeColor,
           )}
           <View style={GlobalStyles.line}></View>
         </View>,

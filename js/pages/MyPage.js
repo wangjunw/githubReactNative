@@ -34,8 +34,11 @@ class My extends Component {
     );
   }
   onClick(menu) {
+    const {theme} = this.props;
     let RouteName,
-      params = {};
+      params = {
+        theme,
+      };
     switch (menu) {
       case MORE_MENU.About:
         RouteName = 'About';
@@ -47,14 +50,14 @@ class My extends Component {
         const url = 'mailto://junweiw811@gmail.com';
         // 是否可以打开其他应用
         Linking.canOpenURL(url)
-          .then(support => {
+          .then((support) => {
             if (!support) {
               console.log('do not open email');
             } else {
               Linking.openURL(url);
             }
           })
-          .catch(e => {
+          .catch((e) => {
             console.error(e);
           });
         break;
@@ -157,11 +160,11 @@ class My extends Component {
     );
   }
 }
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   theme: state.theme.theme,
 });
-const mapDispatchToProps = dispatch => ({
-  onShowCustomThemeView: show => {
+const mapDispatchToProps = (dispatch) => ({
+  onShowCustomThemeView: (show) => {
     return dispatch(actions.onShowCustomThemeView(show));
   },
 });

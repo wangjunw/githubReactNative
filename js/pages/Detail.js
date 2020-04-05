@@ -7,11 +7,12 @@ import {WebView} from 'react-native-webview';
 import NavigationBar from '../components/NavigationBar';
 import NavigationUtil from '../utils/NavigationUtil';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {THEME_COLOR, TRENDING_BASE_URL} from '../config/config';
+import {TRENDING_BASE_URL} from '../config/config';
 import ViewUtil from '../utils/ViewUtil';
 import {isIPoneX} from '../utils/DeviceUtil';
 import FavoriteDao from '../expand/dao/FavoriteDao';
 import BackPressComponent from '../components/BackPressComponent';
+import SafeAreaViewPlus from '../components/SafeAreaViewPlus';
 export default class DetailPage extends Component {
   constructor(props) {
     super(props);
@@ -93,31 +94,34 @@ export default class DetailPage extends Component {
   render() {
     const titleLayoutStyle =
       this.state.title.length > 20 ? {paddingRight: 30} : null;
+    const {theme} = this.params;
+
     let navigationBar = (
       <NavigationBar
         title={this.state.title}
         leftButton={ViewUtil.getLeftBackButton(() => {
           this.onBack();
         })}
-        style={{backgroundColor: THEME_COLOR}}
+        style={theme.styles.navBar}
         titleLayoutStyle={titleLayoutStyle}
         rightButton={this.renderRightButton()}
       />
     );
+
     return (
-      <View style={styles.container}>
+      <SafeAreaViewPlus topColor={theme.themeColor}>
         {navigationBar}
         <WebView
-          ref={webView => {
+          ref={(webView) => {
             this.webView = webView;
           }}
           startInLoadingState={true}
           source={{uri: this.state.url}}
-          onNavigationStateChange={e => {
+          onNavigationStateChange={(e) => {
             this.onNavigationStateChange(e);
           }}
         />
-      </View>
+      </SafeAreaViewPlus>
     );
   }
 }

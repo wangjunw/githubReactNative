@@ -51,7 +51,7 @@ class PopularTabView extends Component {
     );
     EventBus.getInstance().addListener(
       eventTyps.bottom_tab_select,
-      (this.bottomTabSelectListener = data => {
+      (this.bottomTabSelectListener = (data) => {
         // 如果切换到最热页面并且收藏状态改变了，刷新
         if (data.to === 0 && this.isFavoriteChanged) {
           this.loadData(null, true);
@@ -75,7 +75,7 @@ class PopularTabView extends Component {
         pageSize,
         store.items,
         favoriteDao,
-        msg => {
+        (msg) => {
           this.refs['toast'].show(msg);
         },
       );
@@ -106,11 +106,11 @@ class PopularTabView extends Component {
     }
     return store;
   };
-  getFetchUrl = languageName => {
+  getFetchUrl = (languageName) => {
     return URL + languageName + QUERY_STR;
   };
 
-  renderItem = data => {
+  renderItem = (data) => {
     const repoData = data.item;
     const {theme} = this.props;
     return (
@@ -125,9 +125,10 @@ class PopularTabView extends Component {
             FLAG_STORAGE.flag_popular,
           )
         }
-        onSelect={callback => {
+        onSelect={(callback) => {
           NavigationUtil.goPage(
             {
+              theme,
               projectModel: repoData,
               flag: FLAG_STORAGE.flag_popular,
               callback, //页面之间同步收藏状态
@@ -155,8 +156,8 @@ class PopularTabView extends Component {
         <FlatList
           style={styles.tabContainer}
           data={store.projectModels}
-          renderItem={item => this.renderItem(item)}
-          keyExtractor={item => '' + item.item.id}
+          renderItem={(item) => this.renderItem(item)}
+          keyExtractor={(item) => '' + item.item.id}
           refreshControl={
             <RefreshControl
               title={'Loading...'}
@@ -190,10 +191,10 @@ class PopularTabView extends Component {
     );
   }
 }
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   popular: state.popular,
 });
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   onLoadPopularData: (languageName, url, pageSize, favoriteDao) => {
     return dispatch(
       actions.onLoadPopularData(languageName, url, pageSize, favoriteDao),
@@ -248,7 +249,7 @@ class PopularPage extends Component {
     keys.forEach((item, index) => {
       if (item.checked) {
         tabs[`tab${index}`] = {
-          screen: props => (
+          screen: (props) => (
             <PopularTabViewWithRedux
               {...props}
               tabLabel={item.name}
@@ -319,19 +320,19 @@ class PopularPage extends Component {
           )
         : null;
     return (
-      <View style={{flex: 1, marginTop: isIPoneX() ? 30 : 0}}>
+      <View style={{flex: 1}}>
         {navigationBar}
         {TopNavigator && <TopNavigator />}
       </View>
     );
   }
 }
-const mapLangsStateToProps = state => ({
+const mapLangsStateToProps = (state) => ({
   keys: state.language.keys,
   theme: state.theme.theme,
 });
-const mapLangsDispatchToProps = dispatch => ({
-  onLoadLanguage: flag => dispatch(actions.onLoadLanguage(flag)),
+const mapLangsDispatchToProps = (dispatch) => ({
+  onLoadLanguage: (flag) => dispatch(actions.onLoadLanguage(flag)),
 });
 export default connect(
   mapLangsStateToProps,

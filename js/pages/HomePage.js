@@ -8,7 +8,7 @@ import {NavigationActions} from 'react-navigation';
 import {connect} from 'react-redux';
 import BackPressComponent from '../components/BackPressComponent';
 import CustomTheme from '../pages/CustomTheme';
-import {View} from 'react-native';
+import SafeAreaViewPlus from '../components/SafeAreaViewPlus';
 import actions from '../action';
 class HomePage extends Component {
   constructor(props) {
@@ -53,20 +53,24 @@ class HomePage extends Component {
   render() {
     // 保存外层的navigation(即与HomePage同级设置的路由)，用于在子页面中跳转到外层页面
     NavigationUtil.navigation = this.props.navigation;
+
+    const {theme} = this.props;
     return (
-      <View style={{flex: 1}}>
+      <SafeAreaViewPlus topColor={theme.themeColor}>
         <DynamicBottomTabNavigator />
         {this.renderCustomThemeView()}
-      </View>
+      </SafeAreaViewPlus>
     );
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   nav: state.nav,
   customThemeViewVisible: state.theme.customThemeViewVisible,
+  theme: state.theme.theme,
 });
-const mapDispatchToProps = dispatch => ({
-  onShowCustomThemeView: show => dispatch(actions.onShowCustomThemeView(show)),
+const mapDispatchToProps = (dispatch) => ({
+  onShowCustomThemeView: (show) =>
+    dispatch(actions.onShowCustomThemeView(show)),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(HomePage);

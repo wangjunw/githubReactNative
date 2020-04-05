@@ -1,16 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  RefreshControl,
-  ActivityIndicator,
-} from 'react-native';
+import {View, StyleSheet, FlatList, RefreshControl} from 'react-native';
 import {createAppContainer} from 'react-navigation';
-import {isIPoneX} from '../utils/DeviceUtil';
 import FavoriteUtil from '../utils/FavoriteUtil';
 import Toast from 'react-native-easy-toast';
 import NavigationBar from '../components/NavigationBar';
@@ -18,7 +10,6 @@ import RepoItem from '../components/Repo';
 import TrendingRepoItem from '../components/TrendingRepo';
 import actions from '../action/index';
 import FavoriteDao from '../expand/dao/FavoriteDao';
-import {THEME_COLOR} from '../config/config';
 import {FLAG_STORAGE} from '../expand/dao/DataStore';
 import NavigationUtil from '../utils/NavigationUtil';
 import EventBus from 'react-native-event-bus';
@@ -37,7 +28,7 @@ class FavoriteTabView extends Component {
     // 监听eventBus，底部tab切换
     EventBus.getInstance().addListener(
       eventTypes.bottom_tab_select,
-      (this.listener = data => {
+      (this.listener = (data) => {
         // 当切换到收藏页时刷新数据，不展示loading
         if (data.to === 2) {
           this.loadData(false);
@@ -48,7 +39,7 @@ class FavoriteTabView extends Component {
   componentWillUnmount() {
     EventBus.getInstance().removeListener(this.listener);
   }
-  loadData = isLoading => {
+  loadData = (isLoading) => {
     const {onLoadFavoriteData} = this.props;
     onLoadFavoriteData(this.storeName, isLoading);
   };
@@ -72,7 +63,7 @@ class FavoriteTabView extends Component {
       EventBus.getInstance().fireEvent(eventTypes.favorite_change_trending);
     }
   }
-  renderItem = data => {
+  renderItem = (data) => {
     const {theme} = this.props;
     const repoData = data.item;
     const Item =
@@ -86,7 +77,7 @@ class FavoriteTabView extends Component {
         onFavorite={(repoData, isFavorite) =>
           this.onFavorite(repoData.item, isFavorite)
         }
-        onSelect={callback => {
+        onSelect={(callback) => {
           NavigationUtil.goPage(
             {
               theme,
@@ -108,8 +99,8 @@ class FavoriteTabView extends Component {
         <FlatList
           style={styles.tabContainer}
           data={store.projectModels}
-          renderItem={item => this.renderItem(item)}
-          keyExtractor={item => '' + (item.item.id || item.item.fullName)}
+          renderItem={(item) => this.renderItem(item)}
+          keyExtractor={(item) => '' + (item.item.id || item.item.fullName)}
           refreshControl={
             <RefreshControl
               title={'Loading...'}
@@ -128,12 +119,12 @@ class FavoriteTabView extends Component {
     );
   }
 }
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     favorite: state.favorite,
   };
 };
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   onLoadFavoriteData: (storeName, isLoading) => {
     return dispatch(actions.onLoadFavoriteData(storeName, isLoading));
   },
@@ -165,7 +156,7 @@ class FavoritePage extends Component {
       createMaterialTopTabNavigator(
         {
           Popular: {
-            screen: props => (
+            screen: (props) => (
               <FavoriteTabViewWithRedux
                 {...props}
                 theme={theme}
@@ -177,7 +168,7 @@ class FavoritePage extends Component {
             },
           },
           Trending: {
-            screen: props => (
+            screen: (props) => (
               <FavoriteTabViewWithRedux
                 {...props}
                 theme={theme}
@@ -205,14 +196,14 @@ class FavoritePage extends Component {
       ),
     );
     return (
-      <View style={{flex: 1, marginTop: isIPoneX() ? 30 : 0}}>
+      <View style={{flex: 1}}>
         {navigationBar}
         <TopNavigator />
       </View>
     );
   }
 }
-const mapFavoriteStateToProps = state => ({
+const mapFavoriteStateToProps = (state) => ({
   theme: state.theme.theme,
 });
 export default connect(mapFavoriteStateToProps)(FavoritePage);

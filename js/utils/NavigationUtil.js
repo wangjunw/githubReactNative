@@ -14,6 +14,7 @@ export default class NavigationUtil {
       alert('页面不存在');
       return;
     }
+    console.log(222, params);
     navigation.navigate(page, {...params});
   }
   //重置跳转回到首页
