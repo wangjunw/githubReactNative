@@ -12,6 +12,10 @@ buildscript {
     repositories {
         google()
         jcenter()
+        // 友盟的maven仓库地址，教程给的maven { url 'https://dl.bintray.com/umsdk/release' }需要改成括号形式
+        maven {
+            url("https://dl.bintray.com/umsdk/release")
+        }
     }
     dependencies {
         classpath("com.android.tools.build:gradle:3.4.2")
@@ -40,5 +44,6 @@ allprojects {
         google()
         jcenter()
         maven { url 'https://jitpack.io' }
+        mavenCentral()
     }
 }

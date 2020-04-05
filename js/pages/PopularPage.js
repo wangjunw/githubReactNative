@@ -28,7 +28,7 @@ import eventTyps from '../utils/EventTypes';
 import {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
 
 // 友盟
-import AnalysisUtil from '../utils/AnalysisUtil';
+import AnalysisUtil from '../utils/AnalyticsUtil';
 
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
 const pageSize = 10;

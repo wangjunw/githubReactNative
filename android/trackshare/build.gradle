@@ -32,7 +32,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.0.2'
     testImplementation 'junit:junit:4.12'
-    implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation "com.facebook.react:react-native:+"  // From node_modules 添加react-native依赖
     // 添加基础组件库和统计SDK库依赖 教程给的compile需要改成implementation
     api  'com.umeng.umsdk:analytics:8.0.0'
     api  'com.umeng.umsdk:common:2.0.0'

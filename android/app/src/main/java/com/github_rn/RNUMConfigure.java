@@ -1,23 +1,23 @@
-package com.example.trackshare;
-
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.os.Build;
-
-import com.umeng.commonsdk.UMConfigure;
+package com.github_rn;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class TrackShare {
-    public static void init(Context context){
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.os.Build.VERSION_CODES;
+import com.umeng.commonsdk.UMConfigure;
+
+/**
+ * Created by wangfei on 17/9/14.
+ */
+
+public class RNUMConfigure {
+    public static void init(Context context, String appkey, String channel, int type, String secret){
         initRN("react-native","2.0");
-        // 初始化
-        UMConfigure.init(context,"5e647190895cca4f0a00026e","official",UMConfigure.DEVICE_TYPE_PHONE, null);
-        // 启用log
-        UMConfigure.setLogEnabled(BuildConfig.DEBUG);
+        UMConfigure.init(context,appkey,channel,type,secret);
     }
-    @TargetApi(Build.VERSION_CODES.KITKAT)
+    @TargetApi(VERSION_CODES.KITKAT)
     private static void initRN(String v, String t){
         Method method = null;
         try {
